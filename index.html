@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诗意天城 - 云端诗意画廊</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', 'SimSun', 'STKaiti', serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0e6ff 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(230, 240, 255, 0.6) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(240, 230, 255, 0.4) 0%, transparent 30%);
+            z-index: -1;
+        }
+        
+        .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            z-index: -1;
+            animation: float 20s infinite linear;
+        }
+        
+        .cloud-1 {
+            width: 150px;
+            height: 60px;
+            top: 10%;
+            left: 5%;
+            animation-duration: 25s;
+        }
+        
+        .cloud-2 {
+            width: 200px;
+            height: 80px;
+            top: 25%;
+            right: 8%;
+            animation-duration: 30s;
+            animation-delay: 5s;
+        }
+        
+        .cloud-3 {
+            width: 120px;
+            height: 50px;
+            bottom: 20%;
+            left: 15%;
+            animation-duration: 20s;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(20px) translateY(10px); }
+            50% { transform: translateX(0) translateY(20px); }
+            75% { transform: translateX(-20px) translateY(10px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+        
+        header {
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.9) 0%, rgba(37, 117, 252, 0.9) 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 1rem 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .divider {
+            width: 100px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.7);
+            margin: 0 auto 1.5rem;
+            border-radius: 2px;
+        }
+        
+        .poem-line {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.05) 0%, rgba(37, 117, 252, 0.05) 100%);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-img-container {
+            position: relative;
+            overflow: hidden;
+            height: 240px;
+        }
+        
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .card:hover .card-img {
+            transform: scale(1.1);
+        }
+        
+        .card-content {
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-weight: 600;
+            line-height: 1.4;
+            text-align: center;
+            border-bottom: 1px solid rgba(106, 17, 203, 0.2);
+            padding-bottom: 12px;
+        }
+        
+        .card-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            display: none;
+            font-size: 1.1rem;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .load-more {
+            text-align: center;
+            margin: 50px 0;
+        }
+        
+        .load-more-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.3);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .load-more-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .load-more-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(106, 17, 203, 0.4);
+        }
+        
+        .load-more-btn:hover::before {
+            left: 100%;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            color: #7f8c8d;
+            background: rgba(255, 255, 255, 0.7);
+            border-top: 1px solid rgba(230, 230, 230, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-poem {
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            color: #6a11cb;
+            font-size: 1.2rem;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #2575fc;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                padding: 3rem 1rem 2rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* 卷轴效果 */
+        .scroll-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-effect" id="scrollIndicator"></div>
+    
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    
+    <header>
+        <div class="header-content">
+            <h1>诗意天城</h1>
+            <p class="subtitle">云端之上的诗意画廊</p>
+            <div class="divider"></div>
+            <p class="poem-line">天接云涛连晓雾，星河欲转千帆舞</p>
+            <p class="poem-line">仿佛梦魂归帝所，闻天语，殷勤问我归何处</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="gallery" id="gallery">
+            <!-- 图片卡片将通过JavaScript动态加载 -->
+        </div>
+        
+        <div class="loading" id="loading">
+            <i class="fas fa-cloud-download-alt"></i> 正在加载云端诗意图片...
+        </div>
+        
+        <div class="load-more">
+            <button class="load-more-btn" id="loadMore">加载更多诗意</button>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <p class="footer-poem">"我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间。"</p>
+            <p>诗意天城 &copy; 2023 | 云端诗意画廊</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-weixin"></i></a>
+                <a href="#"><i class="fab fa-weibo"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 模拟图片数据 - 在实际应用中，这些数据应该从服务器获取
+        // 图片文件名使用诗句命名
+        const imageData = [
+            {
+                id: 1,
+                title: "春江潮水连海平，海上明月共潮生",
+                filename: "春江潮水连海平.jpg",
+                date: "2023-03-15"
+            },
+            {
+                id: 2,
+                title: "采菊东篱下，悠然见南山",
+                filename: "采菊东篱下.jpg",
+                date: "2023-04-22"
+            },
+            {
+                id: 3,
+                title: "大漠孤烟直，长河落日圆",
+                filename: "大漠孤烟直.jpg",
+                date: "2023-05-10"
+            },
+            {
+                id: 4,
+                title: "两个黄鹂鸣翠柳，一行白鹭上青天",
+                filename: "两个黄鹂鸣翠柳.jpg",
+                date: "2023-06-05"
+            },
+            {
+                id: 5,
+                title: "落霞与孤鹜齐飞，秋水共长天一色",
+                filename: "落霞与孤鹜齐飞.jpg",
+                date: "2023-07-18"
+            },
+            {
+                id: 6,
+                title: "会当凌绝顶，一览众山小",
+                filename: "会当凌绝顶.jpg",
+                date: "2023-08-12"
+            },
+            {
+                id: 7,
+                title: "明月松间照，清泉石上流",
+                filename: "明月松间照.jpg",
+                date: "2023-09-03"
+            },
+            {
+                id: 8,
+                title: "孤帆远影碧空尽，唯见长江天际流",
+                filename: "孤帆远影碧空尽.jpg",
+                date: "2023-10-21"
+            },
+            {
+                id: 9,
+                title: "天街小雨润如酥，草色遥看近却无",
+                filename: "天街小雨润如酥.jpg",
+                date: "2023-11-05"
+            }
+        ];
+        
+        // 当前显示的图片索引
+        let currentIndex = 0;
+        // 每次加载的图片数量
+        const imagesPerLoad = 3;
+        
+        // DOM元素
+        const gallery = document.getElementById('gallery');
+        const loading = document.getElementById('loading');
+        const loadMoreBtn = document.getElementById('loadMore');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        // 加载图片函数
+        function loadImages() {
+            loading.classList.add('show');
+            
+            // 模拟网络延迟
+            setTimeout(() => {
+                const endIndex = Math.min(currentIndex + imagesPerLoad, imageData.length);
+                
+                for (let i = currentIndex; i < endIndex; i++) {
+                    const item = imageData[i];
+                    const title = item.title;
+                    
+                    // 创建卡片元素
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    // 创建图片容器
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'card-img-container';
+                    
+                    // 创建图片元素 - 使用占位图，实际应用中替换为真实图片URL
+                    const img = document.createElement('img');
+                    img.className = 'card-img';
+                    // 使用诗意相关的占位图
+                    img.src = `https://picsum.photos/400/240?random=${item.id}&grayscale`;
+                    img.alt = title;
+                    
+                    // 创建卡片内容
+                    const cardContent = document.createElement('div');
+                    cardContent.className = 'card-content';
+                    
+                    const cardTitle = document.createElement('h3');
+                    cardTitle.className = 'card-title';
+                    cardTitle.textContent = title;
+                    
+                    const cardDate = document.createElement('p');
+                    cardDate.className = 'card-date';
+                    cardDate.textContent = '收录于 ' + formatDate(item.date);
+                    
+                    // 组装卡片
+                    imgContainer.appendChild(img);
+                    cardContent.appendChild(cardTitle);
+                    cardContent.appendChild(cardDate);
+                    
+                    card.appendChild(imgContainer);
+                    card.appendChild(cardContent);
+                    
+                    // 添加到画廊
+                    gallery.appendChild(card);
+                }
+                
+                currentIndex = endIndex;
+                loading.classList.remove('show');
+                
+                // 如果已加载所有图片，隐藏加载更多按钮
+                if (currentIndex >= imageData.length) {
+                    loadMoreBtn.style.display = 'none';
+                }
+            }, 1200);
+        }
+        
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-CN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        // 初始加载
+        loadImages();
+        
+        // 加载更多按钮点击事件
+        loadMoreBtn.addEventListener('click', loadImages);
+        
+        // 滚动进度指示器
+        window.addEventListener('scroll', () => {
+            const winHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset;
+            const scrollPercent = scrollTop / (docHeight - winHeight);
+            const scrollPercentRounded = Math.round(scrollPercent * 100);
+            
+            scrollIndicator.style.transform = `scaleX(${scrollPercent})`;
+            
+            // 无限滚动（可选功能）
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                if (currentIndex < imageData.length && !loading.classList.contains('show')) {
+                    loadImages();
+                }
+            }
+        });
+        
+        // 添加一些动态效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 卡片逐一下落效果
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
