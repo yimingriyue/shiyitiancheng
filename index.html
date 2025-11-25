@@ -338,18 +338,22 @@
             animation: fadeIn 0.3s ease;
         }
         
-        .modal-content {
-            margin: auto;
-            display: block;
-            max-width: 90%;
-            max-height: 90%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 8px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-        }
+.modal-content {
+    /* 修改为以下属性 */
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 95%;
+    max-height: 95%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    object-fit: contain; /* 保持图片比例 */
+}
         
         .modal-close {
             position: absolute;
@@ -443,7 +447,11 @@
             
             .modal-next {
                 right: 10px;
-            }
+            } 
+              .modal-content {
+        max-width: 98%;
+        max-height: 98%;
+    }
         }
         
         @media (max-width: 480px) {
@@ -492,6 +500,17 @@
         .img-loading i {
             margin-right: 10px;
         }
+        
+        .debug-info {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-width: 500px;
+            margin: 10px auto;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -512,6 +531,8 @@
     </header>
     
     <div class="container">
+        <div class="debug-info" id="debugInfo"></div>
+        
         <div class="gallery" id="gallery">
             <!-- 图片卡片将通过JavaScript动态加载 -->
         </div>
@@ -562,6 +583,7 @@
         const loadMoreBtn = document.getElementById('loadMore');
         const errorDiv = document.getElementById('error');
         const scrollIndicator = document.getElementById('scrollIndicator');
+        const debugInfo = document.getElementById('debugInfo');
         
         // 模态框相关元素
         const imageModal = document.getElementById('imageModal');
@@ -578,12 +600,21 @@
         const imagesPerLoad = 6;
         let currentModalIndex = 0;
         
+        // 调试函数
+        function debug(message) {
+            console.log(message);
+            debugInfo.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+            debugInfo.style.display = 'block';
+        }
+        
         // 初始化画廊
         async function initGallery() {
             loading.classList.add('show');
             errorDiv.style.display = 'none';
             
             try {
+                debug('开始从GitHub API获取文件列表...');
+                
                 // 从GitHub API获取文件列表
                 const response = await fetch(GITHUB_API_URL);
                 
@@ -592,13 +623,22 @@
                 }
                 
                 const files = await response.json();
+                debug(`API响应成功，获取到 ${files.length} 个文件`);
                 
                 // 过滤出图片文件
                 allImages = files.filter(file => {
                     if (file.type !== 'file') return false;
                     const extension = file.name.toLowerCase().split('.').pop();
-                    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension);
+                    const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension);
+                    
+                    if (isImage) {
+                        debug(`发现图片文件: ${file.name}`);
+                    }
+                    
+                    return isImage;
                 });
+                
+                debug(`过滤后找到 ${allImages.length} 张图片`);
                 
                 if (allImages.length === 0) {
                     throw new Error('未在仓库中找到图片文件');
@@ -614,6 +654,7 @@
                 
             } catch (error) {
                 console.error('加载图片时出错:', error);
+                debug(`错误: ${error.message}`);
                 showError('无法从GitHub加载图片: ' + error.message);
             } finally {
                 loading.classList.remove('show');
@@ -627,7 +668,17 @@
             for (let i = currentIndex; i < endIndex; i++) {
                 const file = allImages[i];
                 const title = file.name.replace(/\.[^/.]+$/, ""); // 移除文件扩展名
-                const imageUrl = RAW_IMAGE_BASE + file.name;
+                
+                // 构建图片URL - 尝试多种方式
+                let imageUrl;
+                if (file.download_url) {
+                    imageUrl = file.download_url;
+                } else {
+                    // 如果API没有提供download_url，手动构建
+                    imageUrl = RAW_IMAGE_BASE + encodeURIComponent(file.name);
+                }
+                
+                debug(`加载图片: ${file.name}, URL: ${imageUrl}`);
                 
                 // 创建卡片元素
                 const card = document.createElement('div');
@@ -651,16 +702,24 @@
                 
                 // 图片加载处理
                 img.onload = function() {
+                    debug(`图片加载成功: ${file.name}`);
                     imgLoading.style.display = 'none';
                 };
                 
                 // 图片加载错误处理
                 img.onerror = function() {
+                    debug(`图片加载失败: ${file.name}`);
                     imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
                     imgLoading.style.color = '#e74c3c';
+                    
+                    // 尝试备用URL
                     setTimeout(() => {
-                        imgLoading.style.display = 'none';
-                        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWbvueJh+WKoOi9veS4rS4uLjwvdGV4dD48L3N2Zz4=';
+                        debug(`尝试备用URL: ${file.name}`);
+                        imgLoading.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 尝试备用方案...';
+                        
+                        // 使用GitHub Pages URL作为备用
+                        const fallbackUrl = `https://yimingriyue.github.io/shiyitiancheng/shiyitiancheng/${encodeURIComponent(file.name)}`;
+                        img.src = fallbackUrl;
                     }, 2000);
                 };
                 
@@ -722,7 +781,16 @@
             currentModalIndex = index;
             const file = allImages[index];
             const title = file.name.replace(/\.[^/.]+$/, "");
-            const imageUrl = RAW_IMAGE_BASE + file.name;
+            
+            // 构建图片URL
+            let imageUrl;
+            if (file.download_url) {
+                imageUrl = file.download_url;
+            } else {
+                imageUrl = RAW_IMAGE_BASE + encodeURIComponent(file.name);
+            }
+            
+            debug(`打开模态框: ${file.name}, URL: ${imageUrl}`);
             
             // 显示模态框
             imageModal.style.display = 'block';
@@ -732,12 +800,24 @@
             
             // 加载原图
             modalImage.onload = function() {
+                debug(`模态框图片加载成功: ${file.name}`);
                 modalLoading.style.display = 'none';
                 modalImage.style.display = 'block';
             };
             
             modalImage.onerror = function() {
+                debug(`模态框图片加载失败: ${file.name}`);
                 modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+                
+                // 尝试备用URL
+                setTimeout(() => {
+                    debug(`模态框尝试备用URL: ${file.name}`);
+                    modalLoading.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 尝试备用方案...';
+                    
+                    // 使用GitHub Pages URL作为备用
+                    const fallbackUrl = `https://yimingriyue.github.io/shiyitiancheng/shiyitiancheng/${encodeURIComponent(file.name)}`;
+                    modalImage.src = fallbackUrl;
+                }, 2000);
             };
             
             modalImage.src = imageUrl;
