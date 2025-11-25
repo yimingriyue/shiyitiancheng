@@ -279,6 +279,16 @@
             left: 100%;
         }
         
+        .error {
+            text-align: center;
+            padding: 30px;
+            color: #e74c3c;
+            background: #ffeaea;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
         footer {
             text-align: center;
             padding: 40px 0;
@@ -382,156 +392,158 @@
         </div>
         
         <div class="loading" id="loading">
-            <i class="fas fa-cloud-download-alt"></i> 正在加载云端诗意图片...
+            <i class="fas fa-cloud-download-alt"></i> 正在从云端加载诗意图片...
+        </div>
+        
+        <div class="error" id="error">
+            <!-- 错误信息将在这里显示 -->
         </div>
         
         <div class="load-more">
-            <button class="load-more-btn" id="loadMore">加载更多诗意</button>
+            <button class="load-more-btn" id="loadMore" style="display: none;">加载更多诗意</button>
         </div>
     </div>
     
     <footer>
         <div class="footer-content">
             <p class="footer-poem">"我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间。"</p>
-            <p>诗意天城 &copy; 2023 | 云端诗意画廊</p>
+            <p>诗意天城 &copy; 2023 | 云端诗意画廊 | 数据来源：GitHub仓库</p>
             <div class="social-links">
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-weixin"></i></a>
-                <a href="#"><i class="fab fa-weibo"></i></a>
+                <a href="https://github.com/yimingriyue/shiyaitanji" target="_blank"><i class="fab fa-github"></i></a>
             </div>
         </div>
     </footer>
 
     <script>
-        // 模拟图片数据 - 在实际应用中，这些数据应该从服务器获取
-        // 图片文件名使用诗句命名
-        const imageData = [
-            {
-                id: 1,
-                title: "春江潮水连海平，海上明月共潮生",
-                filename: "春江潮水连海平.jpg",
-                date: "2023-03-15"
-            },
-            {
-                id: 2,
-                title: "采菊东篱下，悠然见南山",
-                filename: "采菊东篱下.jpg",
-                date: "2023-04-22"
-            },
-            {
-                id: 3,
-                title: "大漠孤烟直，长河落日圆",
-                filename: "大漠孤烟直.jpg",
-                date: "2023-05-10"
-            },
-            {
-                id: 4,
-                title: "两个黄鹂鸣翠柳，一行白鹭上青天",
-                filename: "两个黄鹂鸣翠柳.jpg",
-                date: "2023-06-05"
-            },
-            {
-                id: 5,
-                title: "落霞与孤鹜齐飞，秋水共长天一色",
-                filename: "落霞与孤鹜齐飞.jpg",
-                date: "2023-07-18"
-            },
-            {
-                id: 6,
-                title: "会当凌绝顶，一览众山小",
-                filename: "会当凌绝顶.jpg",
-                date: "2023-08-12"
-            },
-            {
-                id: 7,
-                title: "明月松间照，清泉石上流",
-                filename: "明月松间照.jpg",
-                date: "2023-09-03"
-            },
-            {
-                id: 8,
-                title: "孤帆远影碧空尽，唯见长江天际流",
-                filename: "孤帆远影碧空尽.jpg",
-                date: "2023-10-21"
-            },
-            {
-                id: 9,
-                title: "天街小雨润如酥，草色遥看近却无",
-                filename: "天街小雨润如酥.jpg",
-                date: "2023-11-05"
-            }
-        ];
-        
-        // 当前显示的图片索引
-        let currentIndex = 0;
-        // 每次加载的图片数量
-        const imagesPerLoad = 3;
+        // GitHub API配置
+        const GITHUB_API_URL = 'https://api.github.com/repos/yimingriyue/shiyaitanji/contents/shiyitiancheng';
+        const RAW_IMAGE_BASE = 'https://raw.githubusercontent.com/yimingriyue/shiyaitanji/main/shiyitiancheng/';
         
         // DOM元素
         const gallery = document.getElementById('gallery');
         const loading = document.getElementById('loading');
         const loadMoreBtn = document.getElementById('loadMore');
+        const errorDiv = document.getElementById('error');
         const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        // 存储所有图片数据
+        let allImages = [];
+        let currentIndex = 0;
+        const imagesPerLoad = 6;
+        
+        // 初始化画廊
+        async function initGallery() {
+            loading.classList.add('show');
+            errorDiv.style.display = 'none';
+            
+            try {
+                // 从GitHub API获取文件列表
+                const response = await fetch(GITHUB_API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API请求失败: ${response.status}`);
+                }
+                
+                const files = await response.json();
+                
+                // 过滤出图片文件
+                allImages = files.filter(file => {
+                    if (file.type !== 'file') return false;
+                    const extension = file.name.toLowerCase().split('.').pop();
+                    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension);
+                });
+                
+                if (allImages.length === 0) {
+                    throw new Error('未在仓库中找到图片文件');
+                }
+                
+                // 初始加载图片
+                loadImages();
+                
+                // 如果图片数量超过单次加载量，显示加载更多按钮
+                if (allImages.length > imagesPerLoad) {
+                    loadMoreBtn.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('加载图片时出错:', error);
+                showError('无法从GitHub加载图片: ' + error.message);
+            } finally {
+                loading.classList.remove('show');
+            }
+        }
         
         // 加载图片函数
         function loadImages() {
-            loading.classList.add('show');
+            const endIndex = Math.min(currentIndex + imagesPerLoad, allImages.length);
             
-            // 模拟网络延迟
-            setTimeout(() => {
-                const endIndex = Math.min(currentIndex + imagesPerLoad, imageData.length);
+            for (let i = currentIndex; i < endIndex; i++) {
+                const file = allImages[i];
+                const title = file.name.replace(/\.[^/.]+$/, ""); // 移除文件扩展名
+                const imageUrl = RAW_IMAGE_BASE + file.name;
                 
-                for (let i = currentIndex; i < endIndex; i++) {
-                    const item = imageData[i];
-                    const title = item.title;
-                    
-                    // 创建卡片元素
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    
-                    // 创建图片容器
-                    const imgContainer = document.createElement('div');
-                    imgContainer.className = 'card-img-container';
-                    
-                    // 创建图片元素 - 使用占位图，实际应用中替换为真实图片URL
-                    const img = document.createElement('img');
-                    img.className = 'card-img';
-                    // 使用诗意相关的占位图
-                    img.src = `https://picsum.photos/400/240?random=${item.id}&grayscale`;
-                    img.alt = title;
-                    
-                    // 创建卡片内容
-                    const cardContent = document.createElement('div');
-                    cardContent.className = 'card-content';
-                    
-                    const cardTitle = document.createElement('h3');
-                    cardTitle.className = 'card-title';
-                    cardTitle.textContent = title;
-                    
-                    const cardDate = document.createElement('p');
-                    cardDate.className = 'card-date';
-                    cardDate.textContent = '收录于 ' + formatDate(item.date);
-                    
-                    // 组装卡片
-                    imgContainer.appendChild(img);
-                    cardContent.appendChild(cardTitle);
-                    cardContent.appendChild(cardDate);
-                    
-                    card.appendChild(imgContainer);
-                    card.appendChild(cardContent);
-                    
-                    // 添加到画廊
-                    gallery.appendChild(card);
-                }
+                // 创建卡片元素
+                const card = document.createElement('div');
+                card.className = 'card';
                 
-                currentIndex = endIndex;
-                loading.classList.remove('show');
+                // 创建图片容器
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'card-img-container';
                 
-                // 如果已加载所有图片，隐藏加载更多按钮
-                if (currentIndex >= imageData.length) {
-                    loadMoreBtn.style.display = 'none';
-                }
-            }, 1200);
+                // 创建图片元素
+                const img = document.createElement('img');
+                img.className = 'card-img';
+                img.src = imageUrl;
+                img.alt = title;
+                img.loading = 'lazy'; // 延迟加载
+                
+                // 图片加载错误处理
+                img.onerror = function() {
+                    this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWbvueJh+WKoOi9veS4rS4uLjwvdGV4dD48L3N2Zz4=';
+                };
+                
+                // 创建卡片内容
+                const cardContent = document.createElement('div');
+                cardContent.className = 'card-content';
+                
+                const cardTitle = document.createElement('h3');
+                cardTitle.className = 'card-title';
+                cardTitle.textContent = title;
+                
+                const cardDate = document.createElement('p');
+                cardDate.className = 'card-date';
+                cardDate.textContent = '最后更新: ' + formatDate(file.updated_at || file.created_at);
+                
+                // 组装卡片
+                imgContainer.appendChild(img);
+                cardContent.appendChild(cardTitle);
+                cardContent.appendChild(cardDate);
+                
+                card.appendChild(imgContainer);
+                card.appendChild(cardContent);
+                
+                // 添加到画廊
+                gallery.appendChild(card);
+                
+                // 添加卡片动画
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, i * 100);
+            }
+            
+            currentIndex = endIndex;
+            
+            // 如果已加载所有图片，隐藏加载更多按钮
+            if (currentIndex >= allImages.length) {
+                loadMoreBtn.style.display = 'none';
+            }
         }
         
         // 格式化日期
@@ -544,8 +556,16 @@
             });
         }
         
+        // 显示错误信息
+        function showError(message) {
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+            errorDiv.style.display = 'block';
+            loading.classList.remove('show');
+            loadMoreBtn.style.display = 'none';
+        }
+        
         // 初始加载
-        loadImages();
+        initGallery();
         
         // 加载更多按钮点击事件
         loadMoreBtn.addEventListener('click', loadImages);
@@ -556,32 +576,15 @@
             const docHeight = document.documentElement.scrollHeight;
             const scrollTop = window.pageYOffset;
             const scrollPercent = scrollTop / (docHeight - winHeight);
-            const scrollPercentRounded = Math.round(scrollPercent * 100);
             
             scrollIndicator.style.transform = `scaleX(${scrollPercent})`;
             
             // 无限滚动（可选功能）
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-                if (currentIndex < imageData.length && !loading.classList.contains('show')) {
+                if (currentIndex < allImages.length && !loading.classList.contains('show')) {
                     loadImages();
                 }
             }
-        });
-        
-        // 添加一些动态效果
-        document.addEventListener('DOMContentLoaded', function() {
-            // 卡片逐一下落效果
-            const cards = document.querySelectorAll('.card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
         });
     </script>
 </body>
