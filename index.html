@@ -325,6 +325,99 @@
             color: #2575fc;
         }
         
+        /* 图片预览模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 1001;
+        }
+        
+        .modal-close:hover {
+            color: #6a11cb;
+        }
+        
+        .modal-title {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .modal-nav:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .modal-prev {
+            left: 20px;
+        }
+        
+        .modal-next {
+            right: 20px;
+        }
+        
+        .modal-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
         @media (max-width: 768px) {
             .gallery {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -337,6 +430,19 @@
             
             .subtitle {
                 font-size: 1.2rem;
+            }
+            
+            .modal-nav {
+                font-size: 30px;
+                padding: 8px 12px;
+            }
+            
+            .modal-prev {
+                left: 10px;
+            }
+            
+            .modal-next {
+                right: 10px;
             }
         }
         
@@ -366,6 +472,25 @@
             transform-origin: left;
             transition: transform 0.3s ease;
             z-index: 1000;
+        }
+        
+        /* 图片加载指示器 */
+        .img-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f0f0f0;
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .img-loading i {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -404,6 +529,18 @@
         </div>
     </div>
     
+    <!-- 图片预览模态框 -->
+    <div class="modal" id="imageModal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <div class="modal-nav modal-prev" id="modalPrev">&#10094;</div>
+        <div class="modal-nav modal-next" id="modalNext">&#10095;</div>
+        <div class="modal-loading" id="modalLoading">
+            <i class="fas fa-spinner fa-spin"></i> 加载原图中...
+        </div>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-title" id="modalTitle"></div>
+    </div>
+    
     <footer>
         <div class="footer-content">
             <p class="footer-poem">"我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间。"</p>
@@ -416,8 +553,8 @@
 
     <script>
         // GitHub API配置
-        const GITHUB_API_URL = 'https://api.github.com/repos/yimingriyue/shiyaitanji/contents/shiyitiancheng';
-        const RAW_IMAGE_BASE = 'https://raw.githubusercontent.com/yimingriyue/shiyaitanji/main/shiyitiancheng/';
+        const GITHUB_API_URL = 'https://api.github.com/repos/yimingriyue/shiyitiancheng/contents/shiyitiancheng';
+        const RAW_IMAGE_BASE = 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/shiyitiancheng/';
         
         // DOM元素
         const gallery = document.getElementById('gallery');
@@ -426,10 +563,20 @@
         const errorDiv = document.getElementById('error');
         const scrollIndicator = document.getElementById('scrollIndicator');
         
+        // 模态框相关元素
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalClose = document.getElementById('modalClose');
+        const modalPrev = document.getElementById('modalPrev');
+        const modalNext = document.getElementById('modalNext');
+        const modalLoading = document.getElementById('modalLoading');
+        
         // 存储所有图片数据
         let allImages = [];
         let currentIndex = 0;
         const imagesPerLoad = 6;
+        let currentModalIndex = 0;
         
         // 初始化画廊
         async function initGallery() {
@@ -485,22 +632,40 @@
                 // 创建卡片元素
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.dataset.index = i;
                 
                 // 创建图片容器
                 const imgContainer = document.createElement('div');
                 imgContainer.className = 'card-img-container';
                 
+                // 创建图片加载指示器
+                const imgLoading = document.createElement('div');
+                imgLoading.className = 'img-loading';
+                imgLoading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 加载中...';
+                
                 // 创建图片元素
                 const img = document.createElement('img');
                 img.className = 'card-img';
-                img.src = imageUrl;
                 img.alt = title;
                 img.loading = 'lazy'; // 延迟加载
                 
+                // 图片加载处理
+                img.onload = function() {
+                    imgLoading.style.display = 'none';
+                };
+                
                 // 图片加载错误处理
                 img.onerror = function() {
-                    this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWbvueJh+WKoOi9veS4rS4uLjwvdGV4dD48L3N2Zz4=';
+                    imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+                    imgLoading.style.color = '#e74c3c';
+                    setTimeout(() => {
+                        imgLoading.style.display = 'none';
+                        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWbvueJh+WKoOi9veS4rS4uLjwvdGV4dD48L3N2Zz4=';
+                    }, 2000);
                 };
+                
+                // 设置图片源
+                img.src = imageUrl;
                 
                 // 创建卡片内容
                 const cardContent = document.createElement('div');
@@ -515,12 +680,18 @@
                 cardDate.textContent = '最后更新: ' + formatDate(file.updated_at || file.created_at);
                 
                 // 组装卡片
+                imgContainer.appendChild(imgLoading);
                 imgContainer.appendChild(img);
                 cardContent.appendChild(cardTitle);
                 cardContent.appendChild(cardDate);
                 
                 card.appendChild(imgContainer);
                 card.appendChild(cardContent);
+                
+                // 添加点击事件打开模态框
+                card.addEventListener('click', () => {
+                    openModal(i);
+                });
                 
                 // 添加到画廊
                 gallery.appendChild(card);
@@ -543,6 +714,55 @@
             // 如果已加载所有图片，隐藏加载更多按钮
             if (currentIndex >= allImages.length) {
                 loadMoreBtn.style.display = 'none';
+            }
+        }
+        
+        // 打开图片预览模态框
+        function openModal(index) {
+            currentModalIndex = index;
+            const file = allImages[index];
+            const title = file.name.replace(/\.[^/.]+$/, "");
+            const imageUrl = RAW_IMAGE_BASE + file.name;
+            
+            // 显示模态框
+            imageModal.style.display = 'block';
+            modalTitle.textContent = title;
+            modalImage.style.display = 'none';
+            modalLoading.style.display = 'block';
+            
+            // 加载原图
+            modalImage.onload = function() {
+                modalLoading.style.display = 'none';
+                modalImage.style.display = 'block';
+            };
+            
+            modalImage.onerror = function() {
+                modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+            };
+            
+            modalImage.src = imageUrl;
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            imageModal.style.display = 'none';
+        }
+        
+        // 切换到上一张图片
+        function prevImage() {
+            if (currentModalIndex > 0) {
+                openModal(currentModalIndex - 1);
+            } else {
+                openModal(allImages.length - 1); // 循环到最后一张
+            }
+        }
+        
+        // 切换到下一张图片
+        function nextImage() {
+            if (currentModalIndex < allImages.length - 1) {
+                openModal(currentModalIndex + 1);
+            } else {
+                openModal(0); // 循环到第一张
             }
         }
         
@@ -569,6 +789,31 @@
         
         // 加载更多按钮点击事件
         loadMoreBtn.addEventListener('click', loadImages);
+        
+        // 模态框事件监听
+        modalClose.addEventListener('click', closeModal);
+        modalPrev.addEventListener('click', prevImage);
+        modalNext.addEventListener('click', nextImage);
+        
+        // 点击模态框背景关闭
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) {
+                closeModal();
+            }
+        });
+        
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (imageModal.style.display === 'block') {
+                if (e.key === 'Escape') {
+                    closeModal();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                }
+            }
+        });
         
         // 滚动进度指示器
         window.addEventListener('scroll', () => {
