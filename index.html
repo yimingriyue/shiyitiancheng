@@ -83,8 +83,8 @@
             background: linear-gradient(135deg, rgba(106, 17, 203, 0.9) 0%, rgba(37, 117, 252, 0.9) 100%);
             color: white;
             text-align: center;
-            padding: 5rem 1rem 4rem; /* 增加上下内边距 */
-            margin-bottom: 3rem; /* 增加底部外边距 */
+            padding: 4rem 1rem 3rem;
+            margin-bottom: 2rem;
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -108,61 +108,58 @@
         }
         
         h1 {
-            font-size: 4rem; /* 增大标题字体 */
-            margin-bottom: 1rem; /* 增加底部间距 */
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
             font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            letter-spacing: 3px; /* 增加字间距 */
+            letter-spacing: 2px;
         }
         
         .subtitle {
-            font-size: 1.8rem; /* 增大副标题字体 */
+            font-size: 1.4rem;
             opacity: 0.95;
             font-weight: 300;
-            margin-bottom: 2rem; /* 增加底部间距 */
+            margin-bottom: 1.5rem;
             font-style: italic;
         }
         
         .divider {
-            width: 150px; /* 增加分隔线宽度 */
-            height: 4px; /* 增加分隔线高度 */
+            width: 100px;
+            height: 3px;
             background: rgba(255, 255, 255, 0.7);
-            margin: 0 auto 2rem; /* 增加底部间距 */
+            margin: 0 auto 1.5rem;
             border-radius: 2px;
         }
         
         .poem-line {
-            font-size: 1.3rem; /* 增大诗句字体 */
-            margin: 0.8rem 0; /* 增加诗句间距 */
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
             opacity: 0.9;
         }
         
         .container {
-            max-width: 1600px; /* 增加最大宽度 */
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 40px; /* 增加左右内边距 */
+            padding: 0 20px;
         }
         
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); /* 增加卡片最小宽度 */
-            gap: 40px; /* 增加卡片间距 */
-            padding: 30px 0; /* 增加上下内边距 */
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
         }
         
         .card {
             background: rgba(255, 255, 255, 0.85);
-            border-radius: 20px; /* 增加圆角半径 */
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* 增强阴影效果 */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             transition: all 0.4s ease;
             cursor: pointer;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.5);
             position: relative;
-            display: flex;
-            flex-direction: column;
-            height: auto;
         }
         
         .card::before {
@@ -179,8 +176,8 @@
         }
         
         .card:hover {
-            transform: translateY(-12px) scale(1.03); /* 增强悬停效果 */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15); /* 增强悬停阴影 */
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
         
         .card:hover::before {
@@ -190,59 +187,52 @@
         .card-img-container {
             position: relative;
             overflow: hidden;
-            flex: 1;
-            min-height: 280px; /* 增加最小高度 */
-            max-height: 380px; /* 增加最大高度 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 240px;
         }
         
         .card-img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             display: block;
             transition: transform 0.5s ease;
-            padding: 15px; /* 增加内边距 */
         }
         
         .card:hover .card-img {
-            transform: scale(1.08); /* 增强悬停缩放效果 */
+            transform: scale(1.1);
         }
         
         .card-content {
-            padding: 30px; /* 增加内边距 */
+            padding: 25px;
             position: relative;
             z-index: 1;
-            flex-shrink: 0;
         }
         
         .card-title {
-            font-size: 1.6rem; /* 增大标题字体 */
-            margin-bottom: 15px; /* 增加底部间距 */
+            font-size: 1.4rem;
+            margin-bottom: 12px;
             color: #2c3e50;
             font-weight: 600;
             line-height: 1.4;
             text-align: center;
             border-bottom: 1px solid rgba(106, 17, 203, 0.2);
-            padding-bottom: 15px; /* 增加底部内边距 */
+            padding-bottom: 12px;
         }
         
         .card-date {
             color: #7f8c8d;
-            font-size: 1rem; /* 增大日期字体 */
-            margin-top: 20px; /* 增加顶部间距 */
+            font-size: 0.9rem;
+            margin-top: 15px;
             text-align: center;
             font-style: italic;
         }
         
         .loading {
             text-align: center;
-            padding: 60px; /* 增加内边距 */
+            padding: 40px;
             color: #7f8c8d;
             display: none;
-            font-size: 1.3rem; /* 增大字体 */
+            font-size: 1.1rem;
         }
         
         .loading.show {
@@ -251,19 +241,19 @@
         
         .load-more {
             text-align: center;
-            margin: 60px 0; /* 增加上下外边距 */
+            margin: 50px 0;
         }
         
         .load-more-btn {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: white;
             border: none;
-            padding: 18px 45px; /* 增加按钮内边距 */
+            padding: 14px 35px;
             border-radius: 50px;
-            font-size: 1.3rem; /* 增大按钮字体 */
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(106, 17, 203, 0.3); /* 增强按钮阴影 */
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.3);
             font-family: inherit;
             position: relative;
             overflow: hidden;
@@ -281,8 +271,8 @@
         }
         
         .load-more-btn:hover {
-            transform: translateY(-5px); /* 增强悬停效果 */
-            box-shadow: 0 12px 30px rgba(106, 17, 203, 0.4); /* 增强悬停阴影 */
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(106, 17, 203, 0.4);
         }
         
         .load-more-btn:hover::before {
@@ -291,19 +281,18 @@
         
         .error {
             text-align: center;
-            padding: 40px; /* 增加内边距 */
+            padding: 30px;
             color: #e74c3c;
             background: #ffeaea;
-            border-radius: 12px; /* 增加圆角半径 */
-            margin: 30px 0; /* 增加外边距 */
+            border-radius: 8px;
+            margin: 20px 0;
             display: none;
-            font-size: 1.2rem; /* 增大字体 */
         }
         
         footer {
             text-align: center;
-            padding: 60px 0; /* 增加上下内边距 */
-            margin-top: 80px; /* 增加顶部外边距 */
+            padding: 40px 0;
+            margin-top: 60px;
             color: #7f8c8d;
             background: rgba(255, 255, 255, 0.7);
             border-top: 1px solid rgba(230, 230, 230, 0.8);
@@ -311,25 +300,24 @@
         }
         
         .footer-content {
-            max-width: 900px; /* 增加最大宽度 */
+            max-width: 800px;
             margin: 0 auto;
         }
         
         .footer-poem {
             font-style: italic;
-            margin-bottom: 30px; /* 增加底部间距 */
+            margin-bottom: 20px;
             line-height: 1.8;
-            font-size: 1.3rem; /* 增大字体 */
         }
         
         .social-links {
-            margin-top: 30px; /* 增加顶部间距 */
+            margin-top: 20px;
         }
         
         .social-links a {
             color: #6a11cb;
-            font-size: 1.5rem; /* 增大图标 */
-            margin: 0 15px; /* 增加图标间距 */
+            font-size: 1.2rem;
+            margin: 0 10px;
             transition: color 0.3s ease;
         }
         
@@ -366,16 +354,16 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 12px; /* 增加圆角半径 */
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5); /* 增强阴影效果 */
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
         }
         
         .modal-close {
             position: absolute;
-            top: 30px; /* 增加顶部距离 */
-            right: 40px; /* 增加右侧距离 */
+            top: 20px;
+            right: 30px;
             color: #fff;
-            font-size: 50px; /* 增大关闭按钮 */
+            font-size: 40px;
             font-weight: bold;
             cursor: pointer;
             transition: color 0.3s;
@@ -388,13 +376,13 @@
         
         .modal-title {
             position: absolute;
-            bottom: 30px; /* 增加底部距离 */
+            bottom: 20px;
             left: 0;
             width: 100%;
             text-align: center;
             color: white;
-            font-size: 1.4rem; /* 增大字体 */
-            padding: 15px; /* 增加内边距 */
+            font-size: 1.2rem;
+            padding: 10px;
             background: rgba(0, 0, 0, 0.6);
         }
         
@@ -403,9 +391,9 @@
             top: 50%;
             transform: translateY(-50%);
             color: white;
-            font-size: 50px; /* 增大导航按钮 */
+            font-size: 40px;
             cursor: pointer;
-            padding: 15px 20px; /* 增加内边距 */
+            padding: 10px 15px;
             background: rgba(0, 0, 0, 0.5);
             border-radius: 50%;
             transition: background 0.3s;
@@ -416,11 +404,11 @@
         }
         
         .modal-prev {
-            left: 30px; /* 增加左侧距离 */
+            left: 20px;
         }
         
         .modal-next {
-            right: 30px; /* 增加右侧距离 */
+            right: 20px;
         }
         
         .modal-loading {
@@ -429,7 +417,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-size: 1.8rem; /* 增大字体 */
+            font-size: 1.5rem;
         }
         
         @keyframes fadeIn {
@@ -437,53 +425,36 @@
             to { opacity: 1; }
         }
         
-        @media (max-width: 1200px) {
-            .container {
-                max-width: 1200px;
-                padding: 0 30px;
-            }
-            
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-                gap: 30px;
-            }
-        }
-        
         @media (max-width: 768px) {
             .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 25px;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
             }
             
             h1 {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
             
             .subtitle {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
             }
             
             .modal-nav {
-                font-size: 40px;
-                padding: 12px 16px;
+                font-size: 30px;
+                padding: 8px 12px;
             }
             
             .modal-prev {
-                left: 20px;
+                left: 10px;
             }
             
             .modal-next {
-                right: 20px;
+                right: 10px;
             }
             
             .modal-content-container {
                 max-width: 98%;
                 max-height: 98%;
-            }
-            
-            .card-img-container {
-                min-height: 240px;
-                max-height: 320px;
             }
         }
         
@@ -493,20 +464,11 @@
             }
             
             header {
-                padding: 4rem 1rem 3rem;
+                padding: 3rem 1rem 2rem;
             }
             
             h1 {
-                font-size: 2.5rem;
-            }
-            
-            .card-img-container {
-                min-height: 220px;
-                max-height: 280px;
-            }
-            
-            .container {
-                padding: 0 20px;
+                font-size: 2rem;
             }
         }
         
@@ -516,7 +478,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 6px; /* 增加高度 */
+            height: 5px;
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             transform: scaleX(0);
             transform-origin: left;
@@ -536,22 +498,11 @@
             align-items: center;
             background: #f0f0f0;
             color: #7f8c8d;
-            font-size: 1.2rem; /* 增大字体 */
+            font-size: 1rem;
         }
         
         .img-loading i {
-            margin-right: 12px; /* 增加图标间距 */
-        }
-        
-        /* 缓存提示 */
-        .cache-notice {
-            text-align: center;
-            padding: 15px; /* 增加内边距 */
-            background: rgba(106, 17, 203, 0.1);
-            border-radius: 10px; /* 增加圆角半径 */
-            margin: 15px 0; /* 增加外边距 */
-            color: #6a11cb;
-            font-size: 1rem; /* 增大字体 */
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -573,10 +524,6 @@
     </header>
     
     <div class="container">
-        <div class="cache-notice">
-            <i class="fas fa-bolt"></i> 使用国内镜像加速，加载更快更稳定
-        </div>
-        
         <div class="gallery" id="gallery">
             <!-- 图片卡片将通过JavaScript动态加载 -->
         </div>
@@ -611,24 +558,17 @@
     <footer>
         <div class="footer-content">
             <p class="footer-poem">"我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间。"</p>
-            <p>诗意天城 &copy; 2023 | 云端诗意画廊 | 使用国内镜像加速</p>
+            <p>诗意天城 &copy; 2023 | 云端诗意画廊 | 数据来源：GitHub仓库</p>
             <div class="social-links">
-                <a href="https://github.com/yimingriyue/shiyitiancheng" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://github.com/yimingriyue/shiyaitanji" target="_blank"><i class="fab fa-github"></i></a>
             </div>
         </div>
     </footer>
 
     <script>
-        // 使用国内镜像加速访问GitHub内容
-        const MIRROR_BASE_URLS = [
-            'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/shiyitiancheng/',
-            'https://raw.gitmirror.com/yimingriyue/shiyitiancheng/main/shiyitiancheng/',
-            'https://raw.fastgit.org/yimingriyue/shiyitiancheng/main/shiyitiancheng/',
-            'https://ghproxy.com/https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/shiyitiancheng/'
-        ];
-        
-        // 使用GitHub API的代理服务
-        const GITHUB_API_PROXY = 'https://api.oioweb.cn/api/github/repos';
+        // GitHub API配置
+        const GITHUB_API_URL = 'https://api.github.com/repos/yimingriyue/shiyitiancheng/contents/shiyitiancheng';
+        const RAW_IMAGE_BASE = 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/shiyitiancheng/';
         
         // DOM元素
         const gallery = document.getElementById('gallery');
@@ -658,15 +598,14 @@
             errorDiv.style.display = 'none';
             
             try {
-                // 使用GitHub API代理服务获取文件列表
-                const response = await fetch(`${GITHUB_API_PROXY}?url=https://api.github.com/repos/yimingriyue/shiyitiancheng/contents/shiyitiancheng`);
+                // 从GitHub API获取文件列表
+                const response = await fetch(GITHUB_API_URL);
                 
                 if (!response.ok) {
-                    throw new Error(`API请求失败: ${response.status}`);
+                    throw new Error(`GitHub API请求失败: ${response.status}`);
                 }
                 
-                const data = await response.json();
-                const files = data.result || [];
+                const files = await response.json();
                 
                 // 过滤出图片文件
                 allImages = files.filter(file => {
@@ -689,36 +628,10 @@
                 
             } catch (error) {
                 console.error('加载图片时出错:', error);
-                // 如果API失败，尝试使用备用方案
-                await tryAlternativeLoading();
+                showError('无法从GitHub加载图片: ' + error.message);
             } finally {
                 loading.classList.remove('show');
             }
-        }
-        
-        // 备用加载方案
-        async function tryAlternativeLoading() {
-            try {
-                // 尝试直接使用GitHub Pages
-                const pagesResponse = await fetch('https://yimingriyue.github.io/shiyitiancheng/list.json');
-                if (pagesResponse.ok) {
-                    const imageList = await pagesResponse.json();
-                    allImages = imageList;
-                    loadImages();
-                    return;
-                }
-            } catch (e) {
-                console.log('GitHub Pages方案失败:', e);
-            }
-            
-            // 最终备用方案：显示错误信息
-            showError('无法加载图片，请检查网络连接或稍后重试');
-        }
-        
-        // 获取图片URL（使用镜像）
-        function getImageUrl(fileName, mirrorIndex = 0) {
-            const mirrorUrl = MIRROR_BASE_URLS[mirrorIndex] + encodeURIComponent(fileName);
-            return mirrorUrl;
         }
         
         // 加载图片函数
@@ -728,6 +641,15 @@
             for (let i = currentIndex; i < endIndex; i++) {
                 const file = allImages[i];
                 const title = file.name.replace(/\.[^/.]+$/, ""); // 移除文件扩展名
+                
+                // 构建图片URL - 尝试多种方式
+                let imageUrl;
+                if (file.download_url) {
+                    imageUrl = file.download_url;
+                } else {
+                    // 如果API没有提供download_url，手动构建
+                    imageUrl = RAW_IMAGE_BASE + encodeURIComponent(file.name);
+                }
                 
                 // 创建卡片元素
                 const card = document.createElement('div');
@@ -754,24 +676,23 @@
                     imgLoading.style.display = 'none';
                 };
                 
-                // 图片加载错误处理 - 尝试备用镜像
+                // 图片加载错误处理
                 img.onerror = function() {
-                    const currentMirrorIndex = parseInt(img.dataset.mirrorIndex) || 0;
-                    const nextMirrorIndex = (currentMirrorIndex + 1) % MIRROR_BASE_URLS.length;
+                    imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+                    imgLoading.style.color = '#e74c3c';
                     
-                    if (nextMirrorIndex !== currentMirrorIndex) {
-                        imgLoading.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> 尝试镜像 ${nextMirrorIndex + 1}...`;
-                        img.dataset.mirrorIndex = nextMirrorIndex;
-                        img.src = getImageUrl(file.name, nextMirrorIndex);
-                    } else {
-                        imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
-                        imgLoading.style.color = '#e74c3c';
-                    }
+                    // 尝试备用URL
+                    setTimeout(() => {
+                        imgLoading.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 尝试备用方案...';
+                        
+                        // 使用GitHub Pages URL作为备用
+                        const fallbackUrl = `https://yimingriyue.github.io/shiyitiancheng/shiyitiancheng/${encodeURIComponent(file.name)}`;
+                        img.src = fallbackUrl;
+                    }, 2000);
                 };
                 
-                // 设置图片源 - 使用第一个镜像
-                img.dataset.mirrorIndex = 0;
-                img.src = getImageUrl(file.name, 0);
+                // 设置图片源
+                img.src = imageUrl;
                 
                 // 创建卡片内容
                 const cardContent = document.createElement('div');
@@ -829,14 +750,19 @@
             const file = allImages[index];
             const title = file.name.replace(/\.[^/.]+$/, "");
             
+            // 构建图片URL
+            let imageUrl;
+            if (file.download_url) {
+                imageUrl = file.download_url;
+            } else {
+                imageUrl = RAW_IMAGE_BASE + encodeURIComponent(file.name);
+            }
+            
             // 显示模态框
             imageModal.style.display = 'block';
             modalTitle.textContent = title;
             modalImage.style.display = 'none';
             modalLoading.style.display = 'block';
-            
-            // 重置镜像索引
-            modalImage.dataset.mirrorIndex = 0;
             
             // 加载原图
             modalImage.onload = function() {
@@ -848,19 +774,19 @@
             };
             
             modalImage.onerror = function() {
-                const currentMirrorIndex = parseInt(modalImage.dataset.mirrorIndex) || 0;
-                const nextMirrorIndex = (currentMirrorIndex + 1) % MIRROR_BASE_URLS.length;
+                modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
                 
-                if (nextMirrorIndex !== currentMirrorIndex) {
-                    modalLoading.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> 尝试镜像 ${nextMirrorIndex + 1}...`;
-                    modalImage.dataset.mirrorIndex = nextMirrorIndex;
-                    modalImage.src = getImageUrl(file.name, nextMirrorIndex);
-                } else {
-                    modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
-                }
+                // 尝试备用URL
+                setTimeout(() => {
+                    modalLoading.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 尝试备用方案...';
+                    
+                    // 使用GitHub Pages URL作为备用
+                    const fallbackUrl = `https://yimingriyue.github.io/shiyitiancheng/shiyitiancheng/${encodeURIComponent(file.name)}`;
+                    modalImage.src = fallbackUrl;
+                }, 2000);
             };
             
-            modalImage.src = getImageUrl(file.name, 0);
+            modalImage.src = imageUrl;
         }
         
         // 根据图片尺寸调整模态框中的图片显示
