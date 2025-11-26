@@ -582,7 +582,7 @@
         </div>
     </footer>
 
-      <script>
+        <script>
 // GitHub API配置
 const GITHUB_API_BASE = 'https://api.github.com/repos/yimingriyue/shiyitiancheng/contents/';
 const CDN_CONFIG = {
@@ -612,6 +612,9 @@ let currentIndex = 0;
 const imagesPerLoad = 6;
 let currentModalIndex = 0;
 
+// 图片缓存，避免重复加载
+const imageCache = new Map();
+
 // 获取图片URL（优先使用CDN）
 function getImageUrl(file, useCDN = true) {
   if (useCDN) {
@@ -625,6 +628,45 @@ function getImageUrl(file, useCDN = true) {
       return CDN_CONFIG.raw + encodeURIComponent(file.folderPath) + '/' + encodeURIComponent(file.name);
     }
   }
+}
+
+// 预加载图片到缓存
+function preloadImageToCache(url, index) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = function() {
+      imageCache.set(index, {
+        url: url,
+        element: img,
+        loaded: true
+      });
+      resolve(true);
+    };
+    img.onerror = function() {
+      console.warn(`预加载图片失败: ${url}`);
+      resolve(false);
+    };
+    img.src = url;
+  });
+}
+
+// 从缓存获取图片或创建新的
+function getImageFromCache(index, file) {
+  if (imageCache.has(index)) {
+    const cached = imageCache.get(index);
+    if (cached.loaded) {
+      return cached.element;
+    }
+  }
+  
+  // 如果缓存中没有，创建新的图片并开始预加载
+  const imageUrl = getImageUrl(file, true);
+  const img = new Image();
+  
+  // 异步预加载到缓存
+  preloadImageToCache(imageUrl, index);
+  
+  return img;
 }
 
 // 初始化画廊
@@ -715,7 +757,7 @@ function loadImages() {
         const file = allImages[i];
         const title = file.name.replace(/\.[^/.]+$/, ""); // 移除文件扩展名
         
-        // 构建图片URL - 优先使用CDN
+        // 构建图片URL - 优先使用CDN（卡片和模态框使用相同的URL）
         const imageUrl = getImageUrl(file, true);
         
         // 创建卡片元素
@@ -741,6 +783,9 @@ function loadImages() {
         // 图片加载处理
         img.onload = function() {
             imgLoading.style.display = 'none';
+            
+            // 图片加载成功后，预加载到缓存供模态框使用
+            preloadImageToCache(imageUrl, i);
         };
         
         // 图片加载错误处理 - 尝试备用URL
@@ -821,41 +866,58 @@ function openModal(index) {
     const file = allImages[index];
     const title = file.name.replace(/\.[^/.]+$/, "");
     
-    // 构建图片URL - 优先使用CDN
-    const imageUrl = getImageUrl(file, true);
-    
     // 显示模态框
     imageModal.style.display = 'block';
     modalTitle.textContent = title;
     modalImage.style.display = 'none';
     modalLoading.style.display = 'block';
     
-    // 加载原图
-    modalImage.onload = function() {
+    // 检查图片是否已经在缓存中
+    if (imageCache.has(index) && imageCache.get(index).loaded) {
+        // 使用缓存的图片
+        const cachedImage = imageCache.get(index).element;
+        modalImage.src = cachedImage.src;
         modalLoading.style.display = 'none';
         modalImage.style.display = 'block';
-        
-        // 根据图片尺寸调整显示
         adjustModalImage();
-    };
-    
-    // 图片加载错误处理 - 尝试备用URL
-    modalImage.onerror = function() {
-        modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> CDN加载失败，尝试备用方案...';
+    } else {
+        // 构建图片URL - 优先使用CDN
+        const imageUrl = getImageUrl(file, true);
         
-        // 使用原始GitHub URL作为备用
-        setTimeout(() => {
-            const fallbackUrl = getImageUrl(file, false);
-            modalImage.src = fallbackUrl;
+        // 加载原图
+        modalImage.onload = function() {
+            modalLoading.style.display = 'none';
+            modalImage.style.display = 'block';
             
-            // 如果备用方案也失败
-            modalImage.onerror = function() {
-                modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 所有镜像都加载失败';
-            };
-        }, 1000);
-    };
-    
-    modalImage.src = imageUrl;
+            // 根据图片尺寸调整显示
+            adjustModalImage();
+            
+            // 缓存这张图片
+            imageCache.set(index, {
+                url: imageUrl,
+                element: modalImage,
+                loaded: true
+            });
+        };
+        
+        // 图片加载错误处理 - 尝试备用URL
+        modalImage.onerror = function() {
+            modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> CDN加载失败，尝试备用方案...';
+            
+            // 使用原始GitHub URL作为备用
+            setTimeout(() => {
+                const fallbackUrl = getImageUrl(file, false);
+                modalImage.src = fallbackUrl;
+                
+                // 如果备用方案也失败
+                modalImage.onerror = function() {
+                    modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 所有镜像都加载失败';
+                };
+            }, 1000);
+        };
+        
+        modalImage.src = imageUrl;
+    }
 }
 
 // 根据图片尺寸调整模态框中的图片显示
