@@ -587,16 +587,15 @@ header {
 
     <script>
         // CDN配置 - 使用多个CDN备用
-        const CDN_CONFIG = {
-            gcore: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-            fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-            jsdelivr: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-            raw: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
-        };
+const CDN_CONFIG = {
+    primary: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+    gcore: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+    fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+    testing: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
+};
 
-        // 当前使用的CDN索引
-        let currentCDNIndex = 0;
-        const CDN_PRIORITY = ['gcore', 'fastly', 'jsdelivr'];
+// 当前CDN索引
+let currentCDN = 'primary';
 
         // 图片数据
         let imageData = [];
@@ -832,20 +831,36 @@ card.innerHTML = `
                 card.querySelector('.img-loading').style.display = 'none';
             });
             
-            // 图片加载失败处理
-            img.addEventListener('error', function() {
-                card.querySelector('.img-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
-                card.querySelector('.img-loading').style.color = '#e74c3c';
-            });
+// 图片加载失败处理
+img.addEventListener('error', function() {
+    card.querySelector('.img-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+    card.querySelector('.img-loading').style.color = '#e74c3c';
+    
+    // 添加CDN切换功能
+    setTimeout(() => {
+        switchCDN();
+    }, 2000);
+});
             
             return card;
         }
 
-        // 获取图片URL
-        function getImageUrl(path) {
-            // 使用jsDelivr CDN
-            return CDN_CONFIG.jsdelivr + encodeURI(path);
-        }
+// 获取图片URL - 带CDN切换功能
+function getImageUrl(path) {
+    return CDN_CONFIG[currentCDN] + encodeURI(path);
+}
+
+// CDN失败时切换到备用
+function switchCDN() {
+    const cdns = ['primary', 'gcore', 'fastly', 'testing'];
+    const currentIndex = cdns.indexOf(currentCDN);
+    const nextIndex = (currentIndex + 1) % cdns.length;
+    currentCDN = cdns[nextIndex];
+    console.log(`切换到CDN: ${currentCDN}`);
+    
+    // 重新渲染所有图片
+    renderImages();
+}
 
         // 格式化图片名称
         function formatImageName(name) {
