@@ -671,8 +671,6 @@ header {
                 console.error('加载图片数据失败:', err);
                 showError('加载图片数据失败: ' + err.message);
                 
-                // 尝试使用硬编码数据作为备用
-                tryFallbackData();
             }
         }
 
@@ -727,17 +725,7 @@ header {
             return fixed;
         }
 
-       
-            
-            // 渲染图片
-            renderImages();
-            
-            // 隐藏加载状态
-            loading.classList.remove('show');
-            
-            // 显示备用数据提示
-            showError('使用备用图片数据，部分功能可能受限');
-        }
+ 
 
         // 渲染图片
         function renderImages() {
