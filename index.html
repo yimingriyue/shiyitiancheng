@@ -582,10 +582,13 @@
         </div>
     </footer>
 
-    <script>
-   // GitHub API配置
+      <script>
+// GitHub API配置
 const GITHUB_API_BASE = 'https://api.github.com/repos/yimingriyue/shiyitiancheng/contents/';
-const RAW_IMAGE_BASE = 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/';
+const CDN_CONFIG = {
+  jsdelivr: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+  raw: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
+};
 
 // DOM元素
 const gallery = document.getElementById('gallery');
@@ -608,6 +611,21 @@ let allImages = [];
 let currentIndex = 0;
 const imagesPerLoad = 6;
 let currentModalIndex = 0;
+
+// 获取图片URL（优先使用CDN）
+function getImageUrl(file, useCDN = true) {
+  if (useCDN) {
+    // 使用 jsDelivr CDN（国内友好）
+    return CDN_CONFIG.jsdelivr + encodeURIComponent(file.folderPath) + '/' + encodeURIComponent(file.name);
+  } else {
+    // 备用：直接 GitHub
+    if (file.download_url) {
+      return file.download_url;
+    } else {
+      return CDN_CONFIG.raw + encodeURIComponent(file.folderPath) + '/' + encodeURIComponent(file.name);
+    }
+  }
+}
 
 // 初始化画廊
 async function initGallery() {
@@ -697,14 +715,8 @@ function loadImages() {
         const file = allImages[i];
         const title = file.name.replace(/\.[^/.]+$/, ""); // 移除文件扩展名
         
-        // 构建图片URL
-        let imageUrl;
-        if (file.download_url) {
-            imageUrl = file.download_url;
-        } else {
-            // 如果API没有提供download_url，手动构建
-            imageUrl = RAW_IMAGE_BASE + encodeURIComponent(file.folderPath) + '/' + encodeURIComponent(file.name);
-        }
+        // 构建图片URL - 优先使用CDN
+        const imageUrl = getImageUrl(file, true);
         
         // 创建卡片元素
         const card = document.createElement('div');
@@ -731,22 +743,24 @@ function loadImages() {
             imgLoading.style.display = 'none';
         };
         
-        // 图片加载错误处理
+        // 图片加载错误处理 - 尝试备用URL
         img.onerror = function() {
-            imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+            imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> CDN加载失败，尝试备用方案...';
             imgLoading.style.color = '#e74c3c';
             
-            // 尝试备用URL
+            // 使用原始GitHub URL作为备用
             setTimeout(() => {
-                imgLoading.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 尝试备用方案...';
-                
-                // 使用GitHub Pages URL作为备用
-                const fallbackUrl = `https://yimingriyue.github.io/shiyitiancheng/${encodeURIComponent(file.folderPath)}/${encodeURIComponent(file.name)}`;
+                const fallbackUrl = getImageUrl(file, false);
                 img.src = fallbackUrl;
-            }, 2000);
+                
+                // 如果备用方案也失败
+                img.onerror = function() {
+                    imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 所有镜像都加载失败';
+                };
+            }, 1000);
         };
         
-        // 设置图片源
+        // 设置图片源 - 优先使用CDN
         img.src = imageUrl;
         
         // 创建卡片内容
@@ -807,13 +821,8 @@ function openModal(index) {
     const file = allImages[index];
     const title = file.name.replace(/\.[^/.]+$/, "");
     
-    // 构建图片URL
-    let imageUrl;
-    if (file.download_url) {
-        imageUrl = file.download_url;
-    } else {
-        imageUrl = RAW_IMAGE_BASE + encodeURIComponent(file.folderPath) + '/' + encodeURIComponent(file.name);
-    }
+    // 构建图片URL - 优先使用CDN
+    const imageUrl = getImageUrl(file, true);
     
     // 显示模态框
     imageModal.style.display = 'block';
@@ -830,17 +839,20 @@ function openModal(index) {
         adjustModalImage();
     };
     
+    // 图片加载错误处理 - 尝试备用URL
     modalImage.onerror = function() {
-        modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+        modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> CDN加载失败，尝试备用方案...';
         
-        // 尝试备用URL
+        // 使用原始GitHub URL作为备用
         setTimeout(() => {
-            modalLoading.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 尝试备用方案...';
-            
-            // 使用GitHub Pages URL作为备用
-            const fallbackUrl = `https://yimingriyue.github.io/shiyitiancheng/${encodeURIComponent(file.folderPath)}/${encodeURIComponent(file.name)}`;
+            const fallbackUrl = getImageUrl(file, false);
             modalImage.src = fallbackUrl;
-        }, 2000);
+            
+            // 如果备用方案也失败
+            modalImage.onerror = function() {
+                modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 所有镜像都加载失败';
+            };
+        }, 1000);
     };
     
     modalImage.src = imageUrl;
@@ -914,7 +926,9 @@ modalNext.addEventListener('click', nextImage);
 
 // 点击模态框背景关闭
 imageModal.addEventListener('click', (e) => {
-    if (e.target === imageModal) {
+    // 检查点击的是否是背景（不是图片、不是导航按钮、不是关闭按钮）
+    if (e.target === imageModal || 
+        e.target.classList.contains('modal-content-container')) {
         closeModal();
     }
 });
