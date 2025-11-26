@@ -219,6 +219,10 @@ header {
             text-align: center;
             border-bottom: 1px solid rgba(106, 17, 203, 0.2);
             padding-bottom: 8px;
+                /* 添加以下属性来实现句号换行 */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
         }
         
         .card-date {
@@ -834,11 +838,16 @@ card.innerHTML = `
             return CDN_CONFIG.jsdelivr + encodeURI(path);
         }
 
-        // 格式化图片名称
-        function formatImageName(name) {
-            // 移除文件扩展名
-            return name.replace(/\.[^/.]+$/, "");
-        }
+// 格式化图片名称
+function formatImageName(name) {
+    // 移除文件扩展名
+    let formattedName = name.replace(/\.[^/.]+$/, "");
+    
+    // 将句号替换为句号加换行符
+    formattedName = formattedName.replace(/\./g, '.\n');
+    
+    return formattedName;
+}
 
         // 格式化日期
         function formatDate(dateString) {
