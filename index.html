@@ -812,7 +812,7 @@ header {
             
 card.innerHTML = `
   <div class="card-content">
-    <h3 class="card-title">${formatImageName(image.name)}</h3>
+    <h4 class="card-title">${formatImageName(image.name)}</h4>
     <p class="card-date">${formatDate(image.time)}</p>
   </div>
   <div class="card-img-container">
@@ -876,11 +876,14 @@ card.innerHTML = `
             modalClose.addEventListener('click', closeModal);
             
             // 点击模态框背景关闭
-            imageModal.addEventListener('click', function(e) {
-                if (e.target === imageModal) {
-                    closeModal();
-                }
-            });
+imageModal.addEventListener('click', function(e) {
+    // 只有当点击的是模态框背景（不是图片、不是关闭按钮、不是导航按钮）时才关闭
+    if (e.target === imageModal || 
+        e.target.classList.contains('modal-content-container') ||
+        (e.target.classList.contains('modal-content') && !modalLoading.style.display === 'block')) {
+        closeModal();
+    }
+});
             
             // 键盘事件
             document.addEventListener('keydown', function(e) {
