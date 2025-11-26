@@ -213,7 +213,7 @@ header {
         }
         
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1rem;
             margin-bottom: 8px;
             color: #2c3e50;
             font-weight: 600;
@@ -225,7 +225,7 @@ header {
         
         .card-date {
             color: #7f8c8d;
-            font-size: 0.8rem;
+            font-size: 0.4rem;
             margin-top: 10px;
             text-align: center;
             font-style: italic;
@@ -810,18 +810,18 @@ header {
             // 使用jsDelivr CDN获取图片URL
             const imageUrl = getImageUrl(image.path);
             
-            card.innerHTML = `
-                <div class="card-img-container">
-                    <div class="img-loading">
-                        <i class="fas fa-spinner fa-spin"></i> 加载中...
-                    </div>
-                    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 viewBox=%220 0 300 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f0f0f0%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22sans-serif%22>图片加载失败</text></svg>'">
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">${formatImageName(image.name)}</h3>
-                    <p class="card-date">${formatDate(image.time)}</p>
-                </div>
-            `;
+card.innerHTML = `
+  <div class="card-content">
+    <h3 class="card-title">${formatImageName(image.name)}</h3>
+    <p class="card-date">${formatDate(image.time)}</p>
+  </div>
+  <div class="card-img-container">
+    <div class="img-loading">
+      <i class="fas fa-spinner fa-spin"></i> 加载中...
+    </div>
+    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 viewBox=%220 0 300 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f0f0f0%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22sans-serif%22>图片加载失败</text></svg>'">
+  </div>
+`;
             
             // 添加点击事件
             card.addEventListener('click', () => openModal(index));
@@ -875,12 +875,15 @@ header {
             // 关闭模态框
             modalClose.addEventListener('click', closeModal);
             
-            // 点击模态框背景关闭
-            imageModal.addEventListener('click', function(e) {
-                if (e.target === imageModal) {
-                    closeModal();
-                }
-            });
+// 点击模态框背景关闭
+imageModal.addEventListener('click', function(e) {
+    // 只有当点击的是模态框背景（不是图片、不是关闭按钮、不是导航按钮）时才关闭
+    if (e.target === imageModal || 
+        e.target.classList.contains('modal-content-container') ||
+        (e.target.classList.contains('modal-content') && !modalLoading.style.display === 'block')) {
+        closeModal();
+    }
+});
             
             // 键盘事件
             document.addEventListener('keydown', function(e) {
