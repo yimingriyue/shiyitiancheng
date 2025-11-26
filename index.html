@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+<html lang="zh-CN">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>诗意天城 - 云端诗意画廊</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,7 +17,7 @@
         }
         
         body {
-        font-weight: normal;
+            font-weight: normal;
             background: linear-gradient(135deg, #e6f7ff 0%, #f0e6ff 100%);
             color: #333;
             line-height: 1.6;
@@ -637,7 +639,23 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                imageData = await response.json();
+                
+                // 获取响应文本并手动解析，避免编码问题
+                const jsonText = await response.text();
+                
+                // 尝试不同编码解析
+                let parsedData;
+                try {
+                    parsedData = JSON.parse(jsonText);
+                } catch (parseError) {
+                    console.warn('标准JSON解析失败，尝试编码修复:', parseError);
+                    
+                    // 尝试修复编码问题
+                    const fixedText = fixEncoding(jsonText);
+                    parsedData = JSON.parse(fixedText);
+                }
+                
+                imageData = parsedData;
                 
                 // 渲染图片
                 renderImages();
@@ -652,7 +670,124 @@
             } catch (err) {
                 console.error('加载图片数据失败:', err);
                 showError('加载图片数据失败: ' + err.message);
+                
+                // 尝试使用硬编码数据作为备用
+                tryFallbackData();
             }
+        }
+
+        // 编码修复函数
+        function fixEncoding(text) {
+            // 尝试常见编码问题修复
+            let fixed = text;
+            
+            // 替换常见乱码字符
+            const encodingMap = {
+                'Ã©': 'é',
+                'Ã¨': 'è',
+                'Ãª': 'ê',
+                'Ã«': 'ë',
+                'Ã¡': 'á',
+                'Ã ': 'à',
+                'Ã¢': 'â',
+                'Ã¤': 'ä',
+                'Ã³': 'ó',
+                'Ã²': 'ò',
+                'Ã´': 'ô',
+                'Ã¶': 'ö',
+                'Ãº': 'ú',
+                'Ã¹': 'ù',
+                'Ã»': 'û',
+                'Ã¼': 'ü',
+                'Ã±': 'ñ',
+                'Ã§': 'ç',
+                'Ã': 'É',
+                'Ã': 'È',
+                'Ã': 'Ê',
+                'Ã': 'Ë',
+                'Ã': 'Á',
+                'Ã': 'À',
+                'Ã': 'Â',
+                'Ã': 'Ä',
+                'Ã': 'Ó',
+                'Ã': 'Ò',
+                'Ã': 'Ô',
+                'Ã': 'Ö',
+                'Ã': 'Ú',
+                'Ã': 'Ù',
+                'Ã': 'Û',
+                'Ã': 'Ü',
+                'Ã': 'Ç'
+            };
+            
+            Object.keys(encodingMap).forEach(badChar => {
+                fixed = fixed.replace(new RegExp(badChar, 'g'), encodingMap[badChar]);
+            });
+            
+            return fixed;
+        }
+
+        // 备用数据
+        function tryFallbackData() {
+            console.log('尝试使用备用数据...');
+            
+            // 使用硬编码的图片数据作为备用
+            imageData = [
+                {
+                    "path": "shiyitiancheng/文王八卦图.jpg",
+                    "name": "文王八卦图.jpg",
+                    "time": "2025-01-01 12:05"
+                },
+                {
+                    "path": "shiyitiancheng/2025/太阳系.jpg",
+                    "name": "太阳系.jpg",
+                    "time": "2025-01-01 12:10"
+                },
+                {
+                    "path": "shiyitiancheng/2025/妄想学生会.jpg",
+                    "name": "妄想学生会.jpg",
+                    "time": "2025-01-01 12:15"
+                },
+                {
+                    "path": "shiyitiancheng/2025/胡桃.jpg",
+                    "name": "胡桃.jpg",
+                    "time": "2025-01-01 12:20"
+                },
+                {
+                    "path": "shiyitiancheng/2025/芙莉莲.jpg",
+                    "name": "芙莉莲.jpg",
+                    "time": "2025-01-01 12:25"
+                },
+                {
+                    "path": "shiyitiancheng/2025/英仙座流星雨，下面是史前巨石阵 摄影师Josh Dury.jpg",
+                    "name": "英仙座流星雨，下面是史前巨石阵 摄影师Josh Dury.jpg",
+                    "time": "2025-01-01 12:30"
+                },
+                {
+                    "path": "shiyitiancheng/2025/酣酣日脚紫烟浮,妍暖破轻裘.困人天色,醉人花气,午梦扶头.春慵恰似春塘水,一片縠纹愁.溶溶泄泄,东风无力,欲皱还休..jpg",
+                    "name": "酣酣日脚紫烟浮,妍暖破轻裘.困人天色,醉人花气,午梦扶头.春慵恰似春塘水,一片縠纹愁.溶溶泄泄,东风无力,欲皱还休..jpg",
+                    "time": "2025-01-01 12:35"
+                },
+                {
+                    "path": "shiyitiancheng/2025/下蛋煎蛋.gif",
+                    "name": "下蛋煎蛋.gif",
+                    "time": "2025-01-01 12:40"
+                },
+                {
+                    "path": "shiyitiancheng/2025/小玲.webp",
+                    "name": "小玲.webp",
+                    "time": "2025-01-01 12:45"
+                }
+            ];
+            
+            // 渲染图片
+            renderImages();
+            
+            // 隐藏加载状态
+            loading.classList.remove('show');
+            
+            // 显示备用数据提示
+            showError('使用备用图片数据，部分功能可能受限');
         }
 
         // 渲染图片
@@ -680,7 +815,7 @@
                     <div class="img-loading">
                         <i class="fas fa-spinner fa-spin"></i> 加载中...
                     </div>
-                    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy">
+                    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 viewBox=%220 0 300 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f0f0f0%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22sans-serif%22>图片加载失败</text></svg>'">
                 </div>
                 <div class="card-content">
                     <h3 class="card-title">${formatImageName(image.name)}</h3>
@@ -709,7 +844,7 @@
         // 获取图片URL
         function getImageUrl(path) {
             // 使用jsDelivr CDN
-            return CDN_CONFIG.jsdelivr + path;
+            return CDN_CONFIG.jsdelivr + encodeURI(path);
         }
 
         // 格式化图片名称
@@ -720,8 +855,12 @@
 
         // 格式化日期
         function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'});
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'});
+            } catch (e) {
+                return dateString;
+            }
         }
 
         // 显示错误信息
