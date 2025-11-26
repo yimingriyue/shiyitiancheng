@@ -585,459 +585,237 @@
         </div>
     </footer>
 
-        <script>
-// GitHub API配置
-const GITHUB_API_BASE = 'https://api.github.com/repos/yimingriyue/shiyitiancheng/contents/';
-const CDN_CONFIG = {
-  jsdelivr: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-  raw: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
-};
+    <script>
+        // CDN配置 - 使用多个CDN备用
+        const CDN_CONFIG = {
+            gcore: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+            fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+            jsdelivr: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+            raw: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
+        };
 
-// DOM元素
-const gallery = document.getElementById('gallery');
-const loading = document.getElementById('loading');
-const loadMoreBtn = document.getElementById('loadMore');
-const errorDiv = document.getElementById('error');
-const scrollIndicator = document.getElementById('scrollIndicator');
+        // 当前使用的CDN索引
+        let currentCDNIndex = 0;
+        const CDN_PRIORITY = ['gcore', 'fastly', 'jsdelivr'];
 
-// 模态框相关元素
-const imageModal = document.getElementById('imageModal');
-const modalImage = document.getElementById('modalImage');
-const modalTitle = document.getElementById('modalTitle');
-const modalClose = document.getElementById('modalClose');
-const modalPrev = document.getElementById('modalPrev');
-const modalNext = document.getElementById('modalNext');
-const modalLoading = document.getElementById('modalLoading');
+        // 图片数据
+        let imageData = [];
+        let currentImageIndex = 0;
 
-// 存储所有图片数据
-let allImages = [];
-let currentIndex = 0;
-const imagesPerLoad = 6;
-let currentModalIndex = 0;
+        // DOM元素
+        const gallery = document.getElementById('gallery');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const loadMoreBtn = document.getElementById('loadMore');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalClose = document.getElementById('modalClose');
+        const modalPrev = document.getElementById('modalPrev');
+        const modalNext = document.getElementById('modalNext');
+        const modalLoading = document.getElementById('modalLoading');
+        const scrollIndicator = document.getElementById('scrollIndicator');
 
-// 图片缓存，避免重复加载
-const imageCache = new Map();
-
-// 获取图片URL（优先使用CDN）
-function getImageUrl(file, useCDN = true) {
-  if (useCDN) {
-    // 使用 jsDelivr CDN（国内友好）
-    return CDN_CONFIG.jsdelivr + encodeURIComponent(file.folderPath) + '/' + encodeURIComponent(file.name);
-  } else {
-    // 备用：直接 GitHub
-    if (file.download_url) {
-      return file.download_url;
-    } else {
-      return CDN_CONFIG.raw + encodeURIComponent(file.folderPath) + '/' + encodeURIComponent(file.name);
-    }
-  }
-}
-
-// 预加载图片到缓存
-function preloadImageToCache(url, index) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = function() {
-      imageCache.set(index, {
-        url: url,
-        element: img,
-        loaded: true
-      });
-      resolve(true);
-    };
-    img.onerror = function() {
-      console.warn(`预加载图片失败: ${url}`);
-      resolve(false);
-    };
-    img.src = url;
-  });
-}
-
-// 从缓存获取图片或创建新的
-function getImageFromCache(index, file) {
-  if (imageCache.has(index)) {
-    const cached = imageCache.get(index);
-    if (cached.loaded) {
-      return cached.element;
-    }
-  }
-  
-  // 如果缓存中没有，创建新的图片并开始预加载
-  const imageUrl = getImageUrl(file, true);
-  const img = new Image();
-  
-  // 异步预加载到缓存
-  preloadImageToCache(imageUrl, index);
-  
-  return img;
-}
-
-// 初始化画廊
-async function initGallery() {
-    loading.classList.add('show');
-    errorDiv.style.display = 'none';
-    
-    try {
-        // 获取所有年份文件夹的图片
-        await getAllImages();
-        
-        if (allImages.length === 0) {
-            throw new Error('未在仓库中找到图片文件');
-        }
-        
-        // 按更新时间倒序排序（最新的在前）
-        allImages.sort((a, b) => {
-            // 优先使用 updated_at，如果没有则使用 created_at
-            const dateA = new Date(a.updated_at || a.created_at);
-            const dateB = new Date(b.updated_at || b.created_at);
-            return dateB - dateA; // 倒序：最新的在前
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 显示加载状态
+            loading.classList.add('show');
+            
+            // 加载图片数据
+            loadImageData();
+            
+            // 设置滚动指示器
+            window.addEventListener('scroll', updateScrollIndicator);
+            
+            // 设置模态框事件
+            setupModalEvents();
         });
-        
-        // 初始加载图片
-        loadImages();
-        
-        // 如果图片数量超过单次加载量，显示加载更多按钮
-        if (allImages.length > imagesPerLoad) {
-            loadMoreBtn.style.display = 'block';
-        }
-        
-    } catch (error) {
-        console.error('加载图片时出错:', error);
-        showError('无法从GitHub加载图片: ' + error.message);
-    } finally {
-        loading.classList.remove('show');
-    }
-}
 
-// 递归获取所有图片
-async function getAllImages() {
-    allImages = [];
-    
-    // 要扫描的文件夹路径
-    const foldersToScan = [
-        'shiyitiancheng',
-        'shiyitiancheng/2024',
-        'shiyitiancheng/2025'
-        // 可以继续添加更多年份文件夹
-    ];
-    
-    // 遍历所有文件夹
-    for (const folderPath of foldersToScan) {
-        try {
-            await scanFolder(folderPath);
-        } catch (error) {
-            console.warn(`无法访问文件夹 ${folderPath}:`, error);
-        }
-    }
-}
-
-// 扫描单个文件夹并获取图片
-async function scanFolder(folderPath) {
-    const response = await fetch(GITHUB_API_BASE + folderPath);
-    
-    if (!response.ok) {
-        throw new Error(`无法访问文件夹: ${folderPath}`);
-    }
-    
-    const items = await response.json();
-    
-    for (const item of items) {
-        if (item.type === 'file') {
-            // 检查是否是图片文件
-            const extension = item.name.toLowerCase().split('.').pop();
-            if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension)) {
-                // 添加文件夹路径信息
-                item.folderPath = folderPath;
-                allImages.push(item);
+        // 加载图片数据
+        async function loadImageData() {
+            try {
+                // 尝试从JSON文件加载图片数据
+                const response = await fetch('index.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                imageData = await response.json();
+                
+                // 渲染图片
+                renderImages();
+                
+                // 隐藏加载状态
+                loading.classList.remove('show');
+                
+                // 如果没有图片，显示错误
+                if (imageData.length === 0) {
+                    showError('没有找到图片数据');
+                }
+            } catch (err) {
+                console.error('加载图片数据失败:', err);
+                showError('加载图片数据失败: ' + err.message);
             }
-        } else if (item.type === 'dir') {
-            // 递归扫描子文件夹（如果需要扫描所有子文件夹）
-            // await scanFolder(item.path);
         }
-    }
-}
 
-// 加载图片函数
-function loadImages() {
-    const endIndex = Math.min(currentIndex + imagesPerLoad, allImages.length);
-    
-    for (let i = currentIndex; i < endIndex; i++) {
-        const file = allImages[i];
-        const title = file.name.replace(/\.[^/.]+$/, ""); // 移除文件扩展名
-        
-        // 构建图片URL - 优先使用CDN（卡片和模态框使用相同的URL）
-        const imageUrl = getImageUrl(file, true);
-        
-        // 创建卡片元素
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.index = i;
-        
-        // 创建图片容器
-        const imgContainer = document.createElement('div');
-        imgContainer.className = 'card-img-container';
-        
-        // 创建图片加载指示器
-        const imgLoading = document.createElement('div');
-        imgLoading.className = 'img-loading';
-        imgLoading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 加载中...';
-        
-        // 创建图片元素
-        const img = document.createElement('img');
-        img.className = 'card-img';
-        img.alt = title;
-        img.loading = 'lazy'; // 延迟加载
-        
-        // 图片加载处理
-        img.onload = function() {
-            imgLoading.style.display = 'none';
+        // 渲染图片
+        function renderImages() {
+            // 清空画廊
+            gallery.innerHTML = '';
             
-            // 图片加载成功后，预加载到缓存供模态框使用
-            preloadImageToCache(imageUrl, i);
-        };
-        
-        // 图片加载错误处理 - 尝试备用URL
-        img.onerror = function() {
-            imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> CDN加载失败，尝试备用方案...';
-            imgLoading.style.color = '#e74c3c';
-            
-            // 使用原始GitHub URL作为备用
-            setTimeout(() => {
-                const fallbackUrl = getImageUrl(file, false);
-                img.src = fallbackUrl;
-                
-                // 如果备用方案也失败
-                img.onerror = function() {
-                    imgLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 所有镜像都加载失败';
-                };
-            }, 1000);
-        };
-        
-        // 设置图片源 - 优先使用CDN
-        img.src = imageUrl;
-        
-        // 创建卡片内容
-        const cardContent = document.createElement('div');
-        cardContent.className = 'card-content';
-        
-        const cardTitle = document.createElement('h3');
-        cardTitle.className = 'card-title';
-        cardTitle.textContent = title;
-        
-const cardDate = document.createElement('p');
-cardDate.className = 'card-date';
-const folderName = file.folderPath.split('/').pop();
-cardDate.textContent = folderName; // 只显示文件夹名称，如 "2025"
-        
-        // 组装卡片
-        imgContainer.appendChild(imgLoading);
-        imgContainer.appendChild(img);
-        cardContent.appendChild(cardTitle);
-        cardContent.appendChild(cardDate);
-        
-        card.appendChild(imgContainer);
-        card.appendChild(cardContent);
-        
-        // 添加点击事件打开模态框
-        card.addEventListener('click', () => {
-            openModal(i);
-        });
-        
-        // 添加到画廊
-        gallery.appendChild(card);
-        
-        // 添加卡片动画
-        setTimeout(() => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, 100);
-        }, i * 100);
-    }
-    
-    currentIndex = endIndex;
-    
-    // 如果已加载所有图片，隐藏加载更多按钮
-    if (currentIndex >= allImages.length) {
-        loadMoreBtn.style.display = 'none';
-    }
-}
-
-// 打开图片预览模态框
-function openModal(index) {
-    currentModalIndex = index;
-    const file = allImages[index];
-    const title = file.name.replace(/\.[^/.]+$/, "");
-    
-    // 显示模态框
-    imageModal.style.display = 'block';
-    modalTitle.textContent = title;
-    modalImage.style.display = 'none';
-    modalLoading.style.display = 'block';
-    
-    // 检查图片是否已经在缓存中
-    if (imageCache.has(index) && imageCache.get(index).loaded) {
-        // 使用缓存的图片
-        const cachedImage = imageCache.get(index).element;
-        modalImage.src = cachedImage.src;
-        modalLoading.style.display = 'none';
-        modalImage.style.display = 'block';
-        adjustModalImage();
-    } else {
-        // 构建图片URL - 优先使用CDN
-        const imageUrl = getImageUrl(file, true);
-        
-        // 加载原图
-        modalImage.onload = function() {
-            modalLoading.style.display = 'none';
-            modalImage.style.display = 'block';
-            
-            // 根据图片尺寸调整显示
-            adjustModalImage();
-            
-            // 缓存这张图片
-            imageCache.set(index, {
-                url: imageUrl,
-                element: modalImage,
-                loaded: true
+            // 创建图片卡片
+            imageData.forEach((image, index) => {
+                const card = createImageCard(image, index);
+                gallery.appendChild(card);
             });
-        };
-        
-        // 图片加载错误处理 - 尝试备用URL
-        modalImage.onerror = function() {
-            modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> CDN加载失败，尝试备用方案...';
+        }
+
+        // 创建图片卡片
+        function createImageCard(image, index) {
+            const card = document.createElement('div');
+            card.className = 'card';
             
-            // 使用原始GitHub URL作为备用
-            setTimeout(() => {
-                const fallbackUrl = getImageUrl(file, false);
-                modalImage.src = fallbackUrl;
-                
-                // 如果备用方案也失败
-                modalImage.onerror = function() {
-                    modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 所有镜像都加载失败';
-                };
-            }, 1000);
-        };
-        
-        modalImage.src = imageUrl;
-    }
-}
-
-// 根据图片尺寸调整模态框中的图片显示
-function adjustModalImage() {
-    const img = modalImage;
-    
-    // 让CSS自动处理图片尺寸，使用object-fit: contain保持比例
-    img.style.width = 'auto';
-    img.style.height = 'auto';
-    img.style.maxWidth = 'calc(100vw - 40px)';
-    img.style.maxHeight = 'calc(100vh - 40px)';
-    
-    // 确保图片居中显示
-    img.style.objectFit = 'contain';
-}
-
-// 关闭模态框
-function closeModal() {
-    imageModal.style.display = 'none';
-}
-
-// 切换到上一张图片
-function prevImage() {
-    if (currentModalIndex > 0) {
-        openModal(currentModalIndex - 1);
-    } else {
-        openModal(allImages.length - 1); // 循环到最后一张
-    }
-}
-
-// 切换到下一张图片
-function nextImage() {
-    if (currentModalIndex < allImages.length - 1) {
-        openModal(currentModalIndex + 1);
-    } else {
-        openModal(0); // 循环到第一张
-    }
-}
-
-// 格式化日期
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('zh-CN', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-}
-
-// 显示错误信息
-function showError(message) {
-    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
-    errorDiv.style.display = 'block';
-    loading.classList.remove('show');
-    loadMoreBtn.style.display = 'none';
-}
-
-// 初始加载
-initGallery();
-
-// 加载更多按钮点击事件
-loadMoreBtn.addEventListener('click', loadImages);
-
-// 模态框事件监听
-modalClose.addEventListener('click', closeModal);
-modalPrev.addEventListener('click', prevImage);
-modalNext.addEventListener('click', nextImage);
-
-// 点击模态框背景关闭
-imageModal.addEventListener('click', (e) => {
-    // 检查点击的是否是背景（不是图片、不是导航按钮、不是关闭按钮）
-    if (e.target === imageModal || 
-        e.target.classList.contains('modal-content-container')) {
-        closeModal();
-    }
-});
-
-// 键盘导航
-document.addEventListener('keydown', (e) => {
-    if (imageModal.style.display === 'block') {
-        if (e.key === 'Escape') {
-            closeModal();
-        } else if (e.key === 'ArrowLeft') {
-            prevImage();
-        } else if (e.key === 'ArrowRight') {
-            nextImage();
+            // 使用jsDelivr CDN获取图片URL
+            const imageUrl = getImageUrl(image.path);
+            
+            card.innerHTML = `
+                <div class="card-img-container">
+                    <div class="img-loading">
+                        <i class="fas fa-spinner fa-spin"></i> 加载中...
+                    </div>
+                    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">${formatImageName(image.name)}</h3>
+                    <p class="card-date">${formatDate(image.time)}</p>
+                </div>
+            `;
+            
+            // 添加点击事件
+            card.addEventListener('click', () => openModal(index));
+            
+            // 图片加载完成后隐藏加载指示器
+            const img = card.querySelector('.card-img');
+            img.addEventListener('load', function() {
+                card.querySelector('.img-loading').style.display = 'none';
+            });
+            
+            // 图片加载失败处理
+            img.addEventListener('error', function() {
+                card.querySelector('.img-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+                card.querySelector('.img-loading').style.color = '#e74c3c';
+            });
+            
+            return card;
         }
-    }
-});
 
-// 滚动进度指示器
-window.addEventListener('scroll', () => {
-    const winHeight = window.innerHeight;
-    const docHeight = document.documentElement.scrollHeight;
-    const scrollTop = window.pageYOffset;
-    const scrollPercent = scrollTop / (docHeight - winHeight);
-    
-    scrollIndicator.style.transform = `scaleX(${scrollPercent})`;
-    
-    // 无限滚动（可选功能）
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-        if (currentIndex < allImages.length && !loading.classList.contains('show')) {
-            loadImages();
+        // 获取图片URL
+        function getImageUrl(path) {
+            // 使用jsDelivr CDN
+            return CDN_CONFIG.jsdelivr + path;
         }
-    }
-});
 
-// 窗口大小变化时调整模态框图片
-window.addEventListener('resize', () => {
-    if (imageModal.style.display === 'block') {
-        adjustModalImage();
-    }
-});
+        // 格式化图片名称
+        function formatImageName(name) {
+            // 移除文件扩展名
+            return name.replace(/\.[^/.]+$/, "");
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'});
+        }
+
+        // 显示错误信息
+        function showError(message) {
+            error.textContent = message;
+            error.style.display = 'block';
+            loading.classList.remove('show');
+        }
+
+        // 设置模态框事件
+        function setupModalEvents() {
+            // 关闭模态框
+            modalClose.addEventListener('click', closeModal);
+            
+            // 点击模态框背景关闭
+            imageModal.addEventListener('click', function(e) {
+                if (e.target === imageModal) {
+                    closeModal();
+                }
+            });
+            
+            // 键盘事件
+            document.addEventListener('keydown', function(e) {
+                if (imageModal.style.display === 'block') {
+                    if (e.key === 'Escape') {
+                        closeModal();
+                    } else if (e.key === 'ArrowLeft') {
+                        showPrevImage();
+                    } else if (e.key === 'ArrowRight') {
+                        showNextImage();
+                    }
+                }
+            });
+            
+            // 导航按钮
+            modalPrev.addEventListener('click', showPrevImage);
+            modalNext.addEventListener('click', showNextImage);
+        }
+
+        // 打开模态框
+        function openModal(index) {
+            currentImageIndex = index;
+            const image = imageData[index];
+            
+            // 显示模态框
+            imageModal.style.display = 'block';
+            modalLoading.style.display = 'block';
+            modalImage.style.display = 'none';
+            
+            // 设置图片标题
+            modalTitle.textContent = formatImageName(image.name);
+            
+            // 加载图片
+            const imageUrl = getImageUrl(image.path);
+            modalImage.src = imageUrl;
+            
+            // 图片加载完成后显示
+            modalImage.onload = function() {
+                modalLoading.style.display = 'none';
+                modalImage.style.display = 'block';
+            };
+            
+            // 图片加载失败处理
+            modalImage.onerror = function() {
+                modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+            };
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            imageModal.style.display = 'none';
+        }
+
+        // 显示上一张图片
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + imageData.length) % imageData.length;
+            openModal(currentImageIndex);
+        }
+
+        // 显示下一张图片
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % imageData.length;
+            openModal(currentImageIndex);
+        }
+
+        // 更新滚动指示器
+        function updateScrollIndicator() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            scrollIndicator.style.transform = `scaleX(${scrolled / 100})`;
+        }
     </script>
 </body>
 </html>
