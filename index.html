@@ -819,7 +819,8 @@ function loadImages() {
 const cardDate = document.createElement('p');
 cardDate.className = 'card-date';
 const folderName = file.folderPath.split('/').pop();
-cardDate.textContent = folderName;        
+cardDate.textContent = folderName; // 只显示文件夹名称，如 "2025"
+        
         // 组装卡片
         imgContainer.appendChild(imgLoading);
         imgContainer.appendChild(img);
