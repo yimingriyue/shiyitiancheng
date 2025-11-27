@@ -591,7 +591,6 @@ const CDN_CONFIG = {
     primary: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
     gcore: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
     fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-    testing: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
 };
 
 // 当前CDN索引
@@ -634,7 +633,7 @@ let currentCDN = 'primary';
         async function loadImageData() {
             try {
                 // 尝试从JSON文件加载图片数据
-                const response = await fetch('jiutu2/index.json');
+                const response = await fetch('./index.json');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
