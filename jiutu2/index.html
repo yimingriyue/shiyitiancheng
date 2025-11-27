@@ -895,33 +895,42 @@ imageModal.addEventListener('click', function(e) {
         }
 
         // 打开模态框
-        function openModal(index) {
-            currentImageIndex = index;
-            const image = imageData[index];
-            
-            // 显示模态框
-            imageModal.style.display = 'block';
-            modalLoading.style.display = 'block';
-            modalImage.style.display = 'none';
-            
-            // 设置图片标题
-            modalTitle.textContent = formatImageName(image.name);
-            
-            // 加载图片
-            const imageUrl = getImageUrl(image.path);
-            modalImage.src = imageUrl;
-            
-            // 图片加载完成后显示
-            modalImage.onload = function() {
-                modalLoading.style.display = 'none';
-                modalImage.style.display = 'block';
-            };
-            
-            // 图片加载失败处理
-            modalImage.onerror = function() {
-                modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
-            };
-        }
+function openModal(index) {
+    currentImageIndex = index;
+    const image = imageData[index];
+    
+    // 显示模态框
+    imageModal.style.display = 'block';
+    
+    // 设置图片标题
+    modalTitle.textContent = formatImageName(image.name);
+    
+    // 查找页面中已加载的图片元素
+    const existingImg = document.querySelector(`.card-img[data-index="${index}"]`);
+    
+    if (existingImg && existingImg.complete && existingImg.naturalWidth > 0) {
+        // 直接使用已加载的图片，避免重新请求
+        modalImage.src = existingImg.src;
+        modalLoading.style.display = 'none';
+        modalImage.style.display = 'block';
+    } else {
+        // 备用：重新加载图片
+        modalLoading.style.display = 'block';
+        modalImage.style.display = 'none';
+        
+        const imageUrl = getImageUrl(image.path);
+        modalImage.src = imageUrl;
+        
+        modalImage.onload = function() {
+            modalLoading.style.display = 'none';
+            modalImage.style.display = 'block';
+        };
+        
+        modalImage.onerror = function() {
+            modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+        };
+    }
+}
 
         // 关闭模态框
         function closeModal() {
