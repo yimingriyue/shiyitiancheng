@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诗意天城 - 云端诗意画廊</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin>
+    <link rel="preconnect" href="https://fontsapi-storage.zeoseven.com" crossorigin>
+    <link rel="stylesheet" href="https://fontsapi.zeoseven.com/94/main/result.css" id="main-font">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "LXGW WenKai Mono GB", 'SimSun', 'STKaiti', serif;
+        }
+        
+        body {
+            font-weight: normal;
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0e6ff 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(230, 240, 255, 0.6) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(240, 230, 255, 0.4) 0%, transparent 30%);
+            z-index: -1;
+        }
+        
+        .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            z-index: -1;
+            animation: float 20s infinite linear;
+        }
+        
+        .cloud-1 {
+            width: 150px;
+            height: 60px;
+            top: 10%;
+            left: 5%;
+            animation-duration: 25s;
+        }
+        
+        .cloud-2 {
+            width: 200px;
+            height: 80px;
+            top: 25%;
+            right: 8%;
+            animation-duration: 30s;
+            animation-delay: 5s;
+        }
+        
+        .cloud-3 {
+            width: 120px;
+            height: 50px;
+            bottom: 20%;
+            left: 15%;
+            animation-duration: 20s;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(20px) translateY(10px); }
+            50% { transform: translateX(0) translateY(20px); }
+            75% { transform: translateX(-20px) translateY(10px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+        
+header {
+    background: linear-gradient(135deg, rgba(106, 17, 203, 0.9) 0%, rgba(37, 117, 252, 0.9) 100%);
+    color: white;
+    text-align: center;
+    padding: 1rem 1rem 1rem; /* 修改这里 */
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .divider {
+            width: 100px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.7);
+            margin: 0 auto 1.5rem;
+            border-radius: 2px;
+        }
+        
+        .poem-line {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.05) 0%, rgba(37, 117, 252, 0.05) 100%);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-img-container {
+            position: relative;
+            overflow: hidden;
+            height: 480px;
+        }
+        
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .card:hover .card-img {
+            transform: scale(1.1);
+        }
+        
+        .card-content {
+            padding: 10px 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            border-bottom: 1px solid rgba(106, 17, 203, 0.2);
+            padding-bottom: 4px;
+        }
+        
+        .card-date {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-top: 5px;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            display: none;
+            font-size: 1.1rem;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .load-more {
+            text-align: center;
+            margin: 50px 0;
+        }
+        
+        .load-more-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.3);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .load-more-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .load-more-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(106, 17, 203, 0.4);
+        }
+        
+        .load-more-btn:hover::before {
+            left: 100%;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 30px;
+            color: #e74c3c;
+            background: #ffeaea;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            color: #7f8c8d;
+            background: rgba(255, 255, 255, 0.7);
+            border-top: 1px solid rgba(230, 230, 230, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-poem {
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            color: #6a11cb;
+            font-size: 1.2rem;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #2575fc;
+        }
+        
+  /* 图片预览模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.5);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-close:hover {
+    color: #6a11cb;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.modal-title {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: all 0.3s;
+    z-index: 1001;
+}
+
+.modal-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.modal-prev {
+    left: 20px;
+}
+
+.modal-next {
+    right: 20px;
+}
+
+.modal-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px 30px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .modal-nav {
+                font-size: 30px;
+                padding: 8px 12px;
+            }
+            
+            .modal-prev {
+                left: 10px;
+            }
+            
+            .modal-next {
+                right: 10px;
+            }
+            
+            .modal-content-container {
+                max-width: 98%;
+                max-height: 98%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                padding: 3rem 1rem 2rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* 卷轴效果 */
+        .scroll-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        /* 图片加载指示器 */
+        .img-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f0f0f0;
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .img-loading i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-effect" id="scrollIndicator"></div>
+    
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    
+    <header>
+        <div class="header-content">
+            <h1>诗意天城</h1>
+            <div class="divider"></div>
+            <p class="poem-line">天接云涛连晓雾，星河欲转千帆舞</p>
+            <p class="poem-line">仿佛梦魂归帝所，闻天语，殷勤问我归何处</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="gallery" id="gallery">
+            <!-- 图片卡片将通过JavaScript动态加载 -->
+        </div>
+        
+        <div class="loading" id="loading">
+            <i class="fas fa-cloud-download-alt"></i> 正在从云端加载诗意图片...
+        </div>
+        
+        <div class="error" id="error">
+            <!-- 错误信息将在这里显示 -->
+        </div>
+        
+        <div class="load-more">
+            <button class="load-more-btn" id="loadMore" style="display: none;">加载更多诗意</button>
+        </div>
+    </div>
+    
+    <!-- 图片预览模态框 -->
+    <div class="modal" id="imageModal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <div class="modal-nav modal-prev" id="modalPrev">&#10094;</div>
+        <div class="modal-nav modal-next" id="modalNext">&#10095;</div>
+        <div class="modal-loading" id="modalLoading">
+            <i class="fas fa-spinner fa-spin"></i> 加载原图中...
+        </div>
+        <div class="modal-content-container">
+            <img class="modal-content" id="modalImage">
+        </div>
+        <div class="modal-title" id="modalTitle"></div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <p class="footer-poem">"我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间。"</p>
+            <p>诗意天城 &copy; 2023 | 云端诗意画廊 | 数据来源：GitHub仓库</p>
+            <div class="social-links">
+                <a href="https://github.com/yimingriyue/shiyaitanji" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // CDN配置 - 使用多个CDN备用
+const CDN_CONFIG = {
+    primary: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+    gcore: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+    fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+    testing: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
+};
+
+// 当前CDN索引
+let currentCDN = 'primary';
+
+        // 图片数据
+        let imageData = [];
+        let currentImageIndex = 0;
+
+        // DOM元素
+        const gallery = document.getElementById('gallery');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const loadMoreBtn = document.getElementById('loadMore');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalClose = document.getElementById('modalClose');
+        const modalPrev = document.getElementById('modalPrev');
+        const modalNext = document.getElementById('modalNext');
+        const modalLoading = document.getElementById('modalLoading');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 显示加载状态
+            loading.classList.add('show');
+            
+            // 加载图片数据
+            loadImageData();
+            
+            // 设置滚动指示器
+            window.addEventListener('scroll', updateScrollIndicator);
+            
+            // 设置模态框事件
+            setupModalEvents();
+        });
+
+        // 加载图片数据
+        async function loadImageData() {
+            try {
+                // 尝试从JSON文件加载图片数据
+                const response = await fetch('index.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // 获取响应文本并手动解析，避免编码问题
+                const jsonText = await response.text();
+                
+                // 尝试不同编码解析
+                let parsedData;
+                try {
+                    parsedData = JSON.parse(jsonText);
+                } catch (parseError) {
+                    console.warn('标准JSON解析失败，尝试编码修复:', parseError);
+                    
+                    // 尝试修复编码问题
+                    const fixedText = fixEncoding(jsonText);
+                    parsedData = JSON.parse(fixedText);
+                }
+                
+                imageData = parsedData;
+                
+                // 渲染图片
+                renderImages();
+                
+                // 隐藏加载状态
+                loading.classList.remove('show');
+                
+                // 如果没有图片，显示错误
+                if (imageData.length === 0) {
+                    showError('没有找到图片数据');
+                }
+            } catch (err) {
+                console.error('加载图片数据失败:', err);
+                showError('加载图片数据失败: ' + err.message);
+                
+                // 尝试使用硬编码数据作为备用
+                tryFallbackData();
+            }
+        }
+
+        // 编码修复函数
+        function fixEncoding(text) {
+            // 尝试常见编码问题修复
+            let fixed = text;
+            
+            // 替换常见乱码字符
+            const encodingMap = {
+                'Ã©': 'é',
+                'Ã¨': 'è',
+                'Ãª': 'ê',
+                'Ã«': 'ë',
+                'Ã¡': 'á',
+                'Ã ': 'à',
+                'Ã¢': 'â',
+                'Ã¤': 'ä',
+                'Ã³': 'ó',
+                'Ã²': 'ò',
+                'Ã´': 'ô',
+                'Ã¶': 'ö',
+                'Ãº': 'ú',
+                'Ã¹': 'ù',
+                'Ã»': 'û',
+                'Ã¼': 'ü',
+                'Ã±': 'ñ',
+                'Ã§': 'ç',
+                'Ã': 'É',
+                'Ã': 'È',
+                'Ã': 'Ê',
+                'Ã': 'Ë',
+                'Ã': 'Á',
+                'Ã': 'À',
+                'Ã': 'Â',
+                'Ã': 'Ä',
+                'Ã': 'Ó',
+                'Ã': 'Ò',
+                'Ã': 'Ô',
+                'Ã': 'Ö',
+                'Ã': 'Ú',
+                'Ã': 'Ù',
+                'Ã': 'Û',
+                'Ã': 'Ü',
+                'Ã': 'Ç'
+            };
+            
+            Object.keys(encodingMap).forEach(badChar => {
+                fixed = fixed.replace(new RegExp(badChar, 'g'), encodingMap[badChar]);
+            });
+            
+            return fixed;
+        }
+
+        // 备用数据
+        function tryFallbackData() {
+            console.log('尝试使用备用数据...');
+            
+            // 使用硬编码的图片数据作为备用
+            imageData = [
+                {
+                    "path": "shiyitiancheng/文王八卦图.webp",
+                    "name": "文王八卦图.webp",
+                    "time": "2025-01-01 12:05"
+                },
+                {
+                    "path": "shiyitiancheng/2025/太阳系.webp",
+                    "name": "太阳系.webp",
+                    "time": "2025-01-01 12:10"
+                },
+                {
+                    "path": "shiyitiancheng/2025/妄想学生会.webp",
+                    "name": "妄想学生会.webp",
+                    "time": "2025-01-01 12:15"
+                },
+                {
+                    "path": "shiyitiancheng/2025/胡桃.webp",
+                    "name": "胡桃.webp",
+                    "time": "2025-01-01 12:20"
+                },
+                {
+                    "path": "shiyitiancheng/2025/芙莉莲.webp",
+                    "name": "芙莉莲.webp",
+                    "time": "2025-01-01 12:25"
+                },
+                {
+                    "path": "shiyitiancheng/2025/英仙座流星雨，下面是史前巨石阵 摄影师Josh Dury.webp",
+                    "name": "英仙座流星雨，下面是史前巨石阵 摄影师Josh Dury.webp",
+                    "time": "2025-01-01 12:30"
+                },
+                {
+                    "path": "shiyitiancheng/2025/酣酣日脚紫烟浮,妍暖破轻裘.困人天色,醉人花气,午梦扶头.春慵恰似春塘水,一片縠纹愁.溶溶泄泄,东风无力,欲皱还休..webp",
+                    "name": "酣酣日脚紫烟浮,妍暖破轻裘.困人天色,醉人花气,午梦扶头.春慵恰似春塘水,一片縠纹愁.溶溶泄泄,东风无力,欲皱还休..webp",
+                    "time": "2025-01-01 12:35"
+                },
+                {
+                    "path": "shiyitiancheng/2025/下蛋煎蛋.gif",
+                    "name": "下蛋煎蛋.gif",
+                    "time": "2025-01-01 12:40"
+                },
+                {
+                    "path": "shiyitiancheng/2025/小玲.webp",
+                    "name": "小玲.webp",
+                    "time": "2025-01-01 12:45"
+                }
+            ];
+            
+            // 渲染图片
+            renderImages();
+            
+            // 隐藏加载状态
+            loading.classList.remove('show');
+            
+            // 显示备用数据提示
+            showError('使用备用图片数据，部分功能可能受限');
+        }
+
+        // 渲染图片
+        function renderImages() {
+            // 清空画廊
+            gallery.innerHTML = '';
+            
+            // 创建图片卡片
+            imageData.forEach((image, index) => {
+                const card = createImageCard(image, index);
+                gallery.appendChild(card);
+            });
+        }
+
+        // 创建图片卡片
+        function createImageCard(image, index) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // 使用jsDelivr CDN获取图片URL
+            const imageUrl = getImageUrl(image.path);
+            
+card.innerHTML = `
+  <div class="card-content">
+    <h4 class="card-title">${formatImageName(image.name)}</h4>
+    <p class="card-date">${formatDate(image.time)}</p>
+  </div>
+  <div class="card-img-container">
+    <div class="img-loading">
+      <i class="fas fa-spinner fa-spin"></i> 加载中...
+    </div>
+    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 viewBox=%220 0 300 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f0f0f0%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22sans-serif%22>图片加载失败</text></svg>'">
+  </div>
+`;
+            
+            // 添加点击事件
+            card.addEventListener('click', () => openModal(index));
+            
+            // 图片加载完成后隐藏加载指示器
+            const img = card.querySelector('.card-img');
+            img.addEventListener('load', function() {
+                card.querySelector('.img-loading').style.display = 'none';
+            });
+            
+// 图片加载失败处理
+img.addEventListener('error', function() {
+    card.querySelector('.img-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+    card.querySelector('.img-loading').style.color = '#e74c3c';
+    
+    // 添加CDN切换功能
+    setTimeout(() => {
+        switchCDN();
+    }, 2000);
+});
+            
+            return card;
+        }
+
+// 获取图片URL - 带CDN切换功能
+function getImageUrl(path) {
+    return CDN_CONFIG[currentCDN] + encodeURI(path);
+}
+
+// CDN失败时切换到备用
+function switchCDN() {
+    const cdns = ['primary', 'gcore', 'fastly', 'testing'];
+    const currentIndex = cdns.indexOf(currentCDN);
+    const nextIndex = (currentIndex + 1) % cdns.length;
+    currentCDN = cdns[nextIndex];
+    console.log(`切换到CDN: ${currentCDN}`);
+    
+    // 重新渲染所有图片
+    renderImages();
+}
+
+        // 格式化图片名称
+        function formatImageName(name) {
+            // 移除文件扩展名
+            return name.replace(/\.[^/.]+$/, "");
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'});
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        // 显示错误信息
+        function showError(message) {
+            error.textContent = message;
+            error.style.display = 'block';
+            loading.classList.remove('show');
+        }
+
+        // 设置模态框事件
+        function setupModalEvents() {
+            // 关闭模态框
+            modalClose.addEventListener('click', closeModal);
+            
+// 点击模态框背景关闭
+imageModal.addEventListener('click', function(e) {
+    // 只有当点击的是模态框背景（不是图片、不是关闭按钮、不是导航按钮）时才关闭
+    if (e.target === imageModal || 
+        e.target.classList.contains('modal-content-container') ||
+        (e.target.classList.contains('modal-content') && !modalLoading.style.display === 'block')) {
+        closeModal();
+    }
+});
+            
+            // 键盘事件
+            document.addEventListener('keydown', function(e) {
+                if (imageModal.style.display === 'block') {
+                    if (e.key === 'Escape') {
+                        closeModal();
+                    } else if (e.key === 'ArrowLeft') {
+                        showPrevImage();
+                    } else if (e.key === 'ArrowRight') {
+                        showNextImage();
+                    }
+                }
+            });
+            
+            // 导航按钮
+            modalPrev.addEventListener('click', showPrevImage);
+            modalNext.addEventListener('click', showNextImage);
+        }
+
+        // 打开模态框
+        function openModal(index) {
+            currentImageIndex = index;
+            const image = imageData[index];
+            
+            // 显示模态框
+            imageModal.style.display = 'block';
+            modalLoading.style.display = 'block';
+            modalImage.style.display = 'none';
+            
+            // 设置图片标题
+            modalTitle.textContent = formatImageName(image.name);
+            
+            // 加载图片
+            const imageUrl = getImageUrl(image.path);
+            modalImage.src = imageUrl;
+            
+            // 图片加载完成后显示
+            modalImage.onload = function() {
+                modalLoading.style.display = 'none';
+                modalImage.style.display = 'block';
+            };
+            
+            // 图片加载失败处理
+            modalImage.onerror = function() {
+                modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+            };
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            imageModal.style.display = 'none';
+        }
+
+        // 显示上一张图片
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + imageData.length) % imageData.length;
+            openModal(currentImageIndex);
+        }
+
+        // 显示下一张图片
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % imageData.length;
+            openModal(currentImageIndex);
+        }
+
+        // 更新滚动指示器
+        function updateScrollIndicator() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            scrollIndicator.style.transform = `scaleX(${scrolled / 100})`;
+        }
+    </script>
+</body>
+</html>
