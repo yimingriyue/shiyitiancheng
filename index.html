@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>诗意天城 - 云端诗意画廊</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin>
@@ -562,6 +563,41 @@
         .img-loading i {
             margin-right: 10px;
         }
+        .subdirectory-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.subdirectory-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .subdirectory-link {
+        top: 15px;
+        left: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -577,7 +613,11 @@
     </button>
     
     <header>
-        <div class="header-content">
+         <div class="header-content">
+        <!-- 添加子目录链接图标 -->
+        <a href="jiutu2/index.html" class="subdirectory-link" title="进入jiutu2">
+            <i class="fas fa-folder-open"></i>
+        </a>
             <h1>诗意天城</h1>
             <div class="divider"></div>
             <p class="poem-line">天接云涛连晓雾，星河欲转千帆舞</p>
