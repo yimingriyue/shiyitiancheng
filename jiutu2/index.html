@@ -853,7 +853,7 @@
                 </div>
             `;
             
-            card.addEventListener('click', () => openModal(index));
+           card.addEventListener('click', () => openModal(index));
             
             const img = card.querySelector('.card-img');
             img.addEventListener('load', function() {
@@ -873,38 +873,41 @@
         }
 
         // 打开模态框
-        function openModal(index) {
-            currentImageIndex = index;
-            const image = PAGINATION_CONFIG.loadedImageData[index];
-            
-            if (!image) return;
-            
-            imageModal.style.display = 'block';
-            modalTitle.textContent = formatImageName(image.name);
-            
-            const existingImg = document.querySelector(`.card-img[data-index="${index}"]`);
-            
-            if (existingImg && existingImg.complete && existingImg.naturalWidth > 0) {
-                modalImage.src = existingImg.src;
-                modalLoading.style.display = 'none';
-                modalImage.style.display = 'block';
-            } else {
-                modalLoading.style.display = 'block';
-                modalImage.style.display = 'none';
-                
-                const imageUrl = getImageUrl(image.path);
-                modalImage.src = imageUrl;
-                
-                modalImage.onload = function() {
-                    modalLoading.style.display = 'none';
-                    modalImage.style.display = 'block';
-                };
-                
-                modalImage.onerror = function() {
-                    modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
-                };
-            }
-        }
+function openModal(index) {
+    currentImageIndex = index;
+    const image = PAGINATION_CONFIG.loadedImageData[index];
+    
+    if (!image) return;
+    
+    imageModal.style.display = 'block';
+    modalTitle.textContent = formatImageName(image.name);
+    
+    // 直接使用卡片中已加载的图片元素
+    const existingImg = document.querySelector(`.card-img[data-index="${index}"]`);
+    
+    if (existingImg && existingImg.complete && existingImg.naturalWidth > 0) {
+        // 关键修改：直接使用已加载的图片，避免重新请求
+        modalImage.src = existingImg.src;
+        modalLoading.style.display = 'none';
+        modalImage.style.display = 'block';
+    } else {
+        // 如果卡片图片还没加载完成，才重新加载
+        modalLoading.style.display = 'block';
+        modalImage.style.display = 'none';
+        
+        const imageUrl = getImageUrl(image.path);
+        modalImage.src = imageUrl;
+        
+        modalImage.onload = function() {
+            modalLoading.style.display = 'none';
+            modalImage.style.display = 'block';
+        };
+        
+        modalImage.onerror = function() {
+            modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+        };
+    }
+}
 
         // 显示上一张图片
         function showPrevImage() {
