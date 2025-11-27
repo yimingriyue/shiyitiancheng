@@ -83,16 +83,57 @@
             100% { transform: translateX(0) translateY(0); }
         }
         
-header {
-    background: linear-gradient(135deg, rgba(106, 17, 203, 0.9) 0%, rgba(37, 117, 252, 0.9) 100%);
-    color: white;
-    text-align: center;
-    padding: 1rem 1rem 1rem; /* 修改这里 */
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
+        /* 新增：左上角导航图标 */
+        .nav-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .nav-icon:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .nav-icon a {
+            color: #6a11cb;
+            font-size: 1.5rem;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        
+        .nav-icon a:hover {
+            color: #2575fc;
+        }
+        
+        header {
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.9) 0%, rgba(37, 117, 252, 0.9) 100%);
+            color: white;
+            text-align: center;
+            padding: 1rem 1rem 1rem; /* 修改这里 */
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
         
         header::before {
             content: "";
@@ -477,6 +518,18 @@ header {
                 max-width: 98%;
                 max-height: 98%;
             }
+            
+            /* 移动端调整导航图标 */
+            .nav-icon {
+                top: 15px;
+                left: 15px;
+                width: 45px;
+                height: 45px;
+            }
+            
+            .nav-icon a {
+                font-size: 1.3rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -490,6 +543,17 @@ header {
             
             h1 {
                 font-size: 2rem;
+            }
+            
+            .nav-icon {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .nav-icon a {
+                font-size: 1.2rem;
             }
         }
         
@@ -528,6 +592,13 @@ header {
     </style>
 </head>
 <body>
+    <!-- 新增：左上角导航图标 -->
+    <div class="nav-icon">
+        <a href="jiutu2/index.html" title="九图集">
+            <i class="fas fa-images"></i>
+        </a>
+    </div>
+    
     <div class="scroll-effect" id="scrollIndicator"></div>
     
     <div class="cloud cloud-1"></div>
