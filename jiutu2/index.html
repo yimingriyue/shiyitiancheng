@@ -83,16 +83,16 @@
             100% { transform: translateX(0) translateY(0); }
         }
         
-header {
-    background: linear-gradient(135deg, rgba(106, 17, 203, 0.9) 0%, rgba(37, 117, 252, 0.9) 100%);
-    color: white;
-    text-align: center;
-    padding: 1rem 1rem 1rem; /* 修改这里 */
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
+        header {
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.9) 0%, rgba(37, 117, 252, 0.9) 100%);
+            color: white;
+            text-align: center;
+            padding: 1rem 1rem 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
         
         header::before {
             content: "";
@@ -329,98 +329,156 @@ header {
             color: #2575fc;
         }
         
-/* 图片预览模态框样式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.98); /* 加深背景 */
-    animation: fadeIn 0.3s ease;
-}
-
-.modal-content-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0; /* 关键修改：去掉padding */
-}
-
-.modal-content {
-    max-width: 100vw;   /* 关键修改：100%视口宽度 */
-    max-height: 100vh;  /* 关键修改：100%视口高度 */
-    width: auto;
-    height: auto;
-    object-fit: contain; /* 保持图片比例 */
-    border-radius: 0;    /* 关键修改：去掉圆角 */
-    box-shadow: none;    /* 关键修改：去掉阴影 */
-}
-
-.modal-title {
-    position: absolute;
-    bottom: 0;          /* 修改：贴底部 */
-    left: 0;
-    width: 100%;
-    text-align: center;
-    color: white;
-    font-size: 1.2rem;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    margin: 0;          /* 确保没有外边距 */
-}
-
-.modal-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-size: 40px;
-    cursor: pointer;
-    padding: 15px 20px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    transition: all 0.3s;
-    z-index: 1001;
-}
-
-.modal-nav:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.modal-prev {
-    left: 20px;
-}
-
-.modal-next {
-    right: 20px;
-}
-
-.modal-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 1.5rem;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 20px 30px;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-}
+        /* 图片预览模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.98);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+        
+        .modal-content {
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .modal-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            margin: 0;
+        }
+        
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+        
+        .modal-nav:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .modal-prev {
+            left: 20px;
+        }
+        
+        .modal-next {
+            right: 20px;
+        }
+        
+        .modal-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.5rem;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
         
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+        
+        /* 瀑布流加载相关样式 */
+        .infinite-loading {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            display: none;
+        }
+        
+        .infinite-loading.show {
+            display: block;
+        }
+        
+        .load-end {
+            text-align: center;
+            padding: 40px;
+            color: #95a5a6;
+            font-style: italic;
+            display: none;
+        }
+        
+        .load-end.show {
+            display: block;
+        }
+        
+        .pagination-info {
+            text-align: center;
+            margin: 20px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4);
+            transition: all 0.3s ease;
+            display: none;
+            z-index: 999;
+        }
+        
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.6);
+        }
+        
+        .scroll-to-top.show {
+            display: block;
         }
         
         @media (max-width: 768px) {
@@ -450,9 +508,11 @@ header {
                 right: 10px;
             }
             
-            .modal-content-container {
-                max-width: 98%;
-                max-height: 98%;
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
             }
         }
         
@@ -511,6 +571,11 @@ header {
     <div class="cloud cloud-2"></div>
     <div class="cloud cloud-3"></div>
     
+    <!-- 返回顶部按钮 -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+    
     <header>
         <div class="header-content">
             <h1>诗意天城</h1>
@@ -525,16 +590,26 @@ header {
             <!-- 图片卡片将通过JavaScript动态加载 -->
         </div>
         
+        <!-- 初始加载提示 -->
         <div class="loading" id="loading">
             <i class="fas fa-cloud-download-alt"></i> 正在从云端加载诗意图片...
         </div>
         
-        <div class="error" id="error">
-            <!-- 错误信息将在这里显示 -->
+        <!-- 无限滚动加载提示 -->
+        <div class="infinite-loading" id="infiniteLoading">
+            <i class="fas fa-spinner fa-spin"></i> 加载更多诗意...
         </div>
         
-        <div class="load-more">
-            <button class="load-more-btn" id="loadMore" style="display: none;">加载更多诗意</button>
+        <!-- 加载完成提示 -->
+        <div class="load-end" id="loadEnd">
+            <i class="fas fa-check-circle"></i> 已加载全部图片，共 <span id="totalCount">0</span> 张
+        </div>
+        
+        <!-- 分页信息 -->
+        <div class="pagination-info" id="paginationInfo"></div>
+        
+        <div class="error" id="error">
+            <!-- 错误信息将在这里显示 -->
         </div>
     </div>
     
@@ -563,25 +638,35 @@ header {
     </footer>
 
     <script>
-        // CDN配置 - 使用多个CDN备用
-const CDN_CONFIG = {
-    primary: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-    gcore: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-    fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-};
+        // 分页配置 - 使用瀑布流无限滚动
+        const PAGINATION_CONFIG = {
+            pageSize: 20, // 每页加载的图片数量
+            currentPage: 0, // 当前页码
+            hasMore: true, // 是否还有更多数据
+            isLoading: false, // 是否正在加载
+            allImageData: [], // 存储所有图片数据
+            loadedImageData: [] // 存储已加载的图片数据
+        };
 
-// 当前CDN索引
-let currentCDN = 'primary';
+        // CDN配置
+        const CDN_CONFIG = {
+            primary: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+            gcore: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+            fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+        };
 
-        // 图片数据
-        let imageData = [];
+        let currentCDN = 'primary';
         let currentImageIndex = 0;
 
         // DOM元素
         const gallery = document.getElementById('gallery');
         const loading = document.getElementById('loading');
+        const infiniteLoading = document.getElementById('infiniteLoading');
+        const loadEnd = document.getElementById('loadEnd');
+        const paginationInfo = document.getElementById('paginationInfo');
         const error = document.getElementById('error');
-        const loadMoreBtn = document.getElementById('loadMore');
+        const totalCount = document.getElementById('totalCount');
+        const scrollToTop = document.getElementById('scrollToTop');
         const imageModal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
         const modalTitle = document.getElementById('modalTitle');
@@ -593,188 +678,159 @@ let currentCDN = 'primary';
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 显示加载状态
             loading.classList.add('show');
-            
-            // 加载图片数据
             loadImageData();
             
-            // 设置滚动指示器
+            // 设置滚动事件监听
+            window.addEventListener('scroll', handleScroll);
             window.addEventListener('scroll', updateScrollIndicator);
             
             // 设置模态框事件
             setupModalEvents();
+            
+            // 返回顶部按钮事件
+            scrollToTop.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         });
 
         // 加载图片数据
         async function loadImageData() {
+            if (PAGINATION_CONFIG.isLoading) return;
+            
+            PAGINATION_CONFIG.isLoading = true;
+            
             try {
-                // 尝试从JSON文件加载图片数据
+                // 如果是第一页，显示初始加载提示
+                if (PAGINATION_CONFIG.currentPage === 0) {
+                    loading.classList.add('show');
+                } else {
+                    infiniteLoading.classList.add('show');
+                }
+                
                 const response = await fetch('./index.json');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                // 获取响应文本并手动解析，避免编码问题
                 const jsonText = await response.text();
-                
-                // 尝试不同编码解析
-                let parsedData;
+                let allImageData;
                 try {
-                    parsedData = JSON.parse(jsonText);
+                    allImageData = JSON.parse(jsonText);
                 } catch (parseError) {
-                    console.warn('标准JSON解析失败，尝试编码修复:', parseError);
-                    
-                    // 尝试修复编码问题
                     const fixedText = fixEncoding(jsonText);
-                    parsedData = JSON.parse(fixedText);
+                    allImageData = JSON.parse(fixedText);
                 }
                 
-                imageData = parsedData;
+                // 存储所有图片数据
+                PAGINATION_CONFIG.allImageData = allImageData;
                 
-                // 渲染图片
-                renderImages();
+                // 加载当前页数据
+                loadCurrentPage();
                 
-                // 隐藏加载状态
-                loading.classList.remove('show');
-                
-                // 如果没有图片，显示错误
-                if (imageData.length === 0) {
-                    showError('没有找到图片数据');
-                }
             } catch (err) {
                 console.error('加载图片数据失败:', err);
                 showError('加载图片数据失败: ' + err.message);
-                
-                // 尝试使用硬编码数据作为备用
                 tryFallbackData();
+            } finally {
+                PAGINATION_CONFIG.isLoading = false;
+                loading.classList.remove('show');
+                infiniteLoading.classList.remove('show');
             }
         }
 
-        // 编码修复函数
-        function fixEncoding(text) {
-            // 尝试常见编码问题修复
-            let fixed = text;
+        // 加载当前页数据
+        function loadCurrentPage() {
+            const startIndex = PAGINATION_CONFIG.currentPage * PAGINATION_CONFIG.pageSize;
+            const endIndex = startIndex + PAGINATION_CONFIG.pageSize;
+            const pageData = PAGINATION_CONFIG.allImageData.slice(startIndex, endIndex);
             
-            // 替换常见乱码字符
-            const encodingMap = {
-                'Ã©': 'é',
-                'Ã¨': 'è',
-                'Ãª': 'ê',
-                'Ã«': 'ë',
-                'Ã¡': 'á',
-                'Ã ': 'à',
-                'Ã¢': 'â',
-                'Ã¤': 'ä',
-                'Ã³': 'ó',
-                'Ã²': 'ò',
-                'Ã´': 'ô',
-                'Ã¶': 'ö',
-                'Ãº': 'ú',
-                'Ã¹': 'ù',
-                'Ã»': 'û',
-                'Ã¼': 'ü',
-                'Ã±': 'ñ',
-                'Ã§': 'ç',
-                'Ã': 'É',
-                'Ã': 'È',
-                'Ã': 'Ê',
-                'Ã': 'Ë',
-                'Ã': 'Á',
-                'Ã': 'À',
-                'Ã': 'Â',
-                'Ã': 'Ä',
-                'Ã': 'Ó',
-                'Ã': 'Ò',
-                'Ã': 'Ô',
-                'Ã': 'Ö',
-                'Ã': 'Ú',
-                'Ã': 'Ù',
-                'Ã': 'Û',
-                'Ã': 'Ü',
-                'Ã': 'Ç'
-            };
+            // 检查是否还有更多数据
+            PAGINATION_CONFIG.hasMore = endIndex < PAGINATION_CONFIG.allImageData.length;
             
-            Object.keys(encodingMap).forEach(badChar => {
-                fixed = fixed.replace(new RegExp(badChar, 'g'), encodingMap[badChar]);
-            });
+            if (PAGINATION_CONFIG.currentPage === 0) {
+                // 第一页
+                PAGINATION_CONFIG.loadedImageData = pageData;
+                renderImages();
+            } else {
+                // 后续页面
+                PAGINATION_CONFIG.loadedImageData = PAGINATION_CONFIG.loadedImageData.concat(pageData);
+                appendImages(pageData);
+            }
             
-            return fixed;
+            // 更新UI状态
+            updatePaginationUI();
+            
+            // 如果没有更多数据，显示加载完成提示
+            if (!PAGINATION_CONFIG.hasMore) {
+                loadEnd.classList.add('show');
+                totalCount.textContent = PAGINATION_CONFIG.allImageData.length;
+            }
         }
 
-        // 备用数据
-        function tryFallbackData() {
-            console.log('尝试使用备用数据...');
+        // 滚动处理 - 瀑布流无限滚动
+        function handleScroll() {
+            // 显示/隐藏返回顶部按钮
+            if (window.scrollY > 500) {
+                scrollToTop.classList.add('show');
+            } else {
+                scrollToTop.classList.remove('show');
+            }
             
-            // 使用硬编码的图片数据作为备用
-            imageData = [
-                {
-                    "path": "shiyitiancheng/文王八卦图.webp",
-                    "name": "文王八卦图.webp",
-                    "time": "2025-01-01 12:05"
-                },
-                {
-                    "path": "shiyitiancheng/2025/太阳系.webp",
-                    "name": "太阳系.webp",
-                    "time": "2025-01-01 12:10"
-                },
-                {
-                    "path": "shiyitiancheng/2025/妄想学生会.webp",
-                    "name": "妄想学生会.webp",
-                    "time": "2025-01-01 12:15"
-                },
-                {
-                    "path": "shiyitiancheng/2025/胡桃.webp",
-                    "name": "胡桃.webp",
-                    "time": "2025-01-01 12:20"
-                },
-                {
-                    "path": "shiyitiancheng/2025/芙莉莲.webp",
-                    "name": "芙莉莲.webp",
-                    "time": "2025-01-01 12:25"
-                },
-                {
-                    "path": "shiyitiancheng/2025/英仙座流星雨，下面是史前巨石阵 摄影师Josh Dury.webp",
-                    "name": "英仙座流星雨，下面是史前巨石阵 摄影师Josh Dury.webp",
-                    "time": "2025-01-01 12:30"
-                },
-                {
-                    "path": "shiyitiancheng/2025/酣酣日脚紫烟浮,妍暖破轻裘.困人天色,醉人花气,午梦扶头.春慵恰似春塘水,一片縠纹愁.溶溶泄泄,东风无力,欲皱还休..webp",
-                    "name": "酣酣日脚紫烟浮,妍暖破轻裘.困人天色,醉人花气,午梦扶头.春慵恰似春塘水,一片縠纹愁.溶溶泄泄,东风无力,欲皱还休..webp",
-                    "time": "2025-01-01 12:35"
-                },
-                {
-                    "path": "shiyitiancheng/2025/下蛋煎蛋.gif",
-                    "name": "下蛋煎蛋.gif",
-                    "time": "2025-01-01 12:40"
-                },
-                {
-                    "path": "shiyitiancheng/2025/小玲.webp",
-                    "name": "小玲.webp",
-                    "time": "2025-01-01 12:45"
+            // 检查是否到达底部，触发加载更多
+            if (PAGINATION_CONFIG.hasMore && !PAGINATION_CONFIG.isLoading) {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                
+                // 距离底部200px时触发加载
+                if (scrollTop + windowHeight >= documentHeight - 200) {
+                    loadNextPage();
                 }
-            ];
+            }
+        }
+
+        // 加载下一页
+        function loadNextPage() {
+            if (!PAGINATION_CONFIG.hasMore || PAGINATION_CONFIG.isLoading) return;
             
-            // 渲染图片
-            renderImages();
-            
-            // 隐藏加载状态
-            loading.classList.remove('show');
-            
-            // 显示备用数据提示
-            showError('使用备用图片数据，部分功能可能受限');
+            PAGINATION_CONFIG.currentPage++;
+            loadCurrentPage();
         }
 
         // 渲染图片
         function renderImages() {
-            // 清空画廊
             gallery.innerHTML = '';
+            appendImages(PAGINATION_CONFIG.loadedImageData);
+        }
+
+        // 追加图片
+        function appendImages(images) {
+            const fragment = document.createDocumentFragment();
             
-            // 创建图片卡片
-            imageData.forEach((image, index) => {
-                const card = createImageCard(image, index);
-                gallery.appendChild(card);
+            const startIndex = PAGINATION_CONFIG.currentPage * PAGINATION_CONFIG.pageSize;
+            
+            images.forEach((image, indexInPage) => {
+                const globalIndex = startIndex + indexInPage;
+                const card = createImageCard(image, globalIndex);
+                fragment.appendChild(card);
             });
+            
+            gallery.appendChild(fragment);
+        }
+
+        // 更新分页UI
+        function updatePaginationUI() {
+            const currentCount = Math.min(
+                (PAGINATION_CONFIG.currentPage + 1) * PAGINATION_CONFIG.pageSize, 
+                PAGINATION_CONFIG.allImageData.length
+            );
+            
+            paginationInfo.textContent = `已加载 ${currentCount} / ${PAGINATION_CONFIG.allImageData.length} 张图片`;
+            
+            if (!PAGINATION_CONFIG.hasMore) {
+                paginationInfo.textContent += ' (已加载全部)';
+            }
         }
 
         // 创建图片卡片
@@ -782,69 +838,104 @@ let currentCDN = 'primary';
             const card = document.createElement('div');
             card.className = 'card';
             
-            // 使用jsDelivr CDN获取图片URL
             const imageUrl = getImageUrl(image.path);
             
-card.innerHTML = `
-  <div class="card-content">
-    <h4 class="card-title">${formatImageName(image.name)}</h4>
-    <p class="card-date">${formatDate(image.time)}</p>
-  </div>
-  <div class="card-img-container">
-    <div class="img-loading">
-      <i class="fas fa-spinner fa-spin"></i> 加载中...
-    </div>
-    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 viewBox=%220 0 300 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f0f0f0%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22sans-serif%22>图片加载失败</text></svg>'">
-  </div>
-`;
+            card.innerHTML = `
+                <div class="card-content">
+                    <h4 class="card-title">${formatImageName(image.name)}</h4>
+                    <p class="card-date">${formatDate(image.time)}</p>
+                </div>
+                <div class="card-img-container">
+                    <div class="img-loading">
+                        <i class="fas fa-spinner fa-spin"></i> 加载中...
+                    </div>
+                    <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 viewBox=%220 0 300 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f0f0f0%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22sans-serif%22>图片加载失败</text></svg>'">
+                </div>
+            `;
             
-            // 添加点击事件
             card.addEventListener('click', () => openModal(index));
             
-            // 图片加载完成后隐藏加载指示器
             const img = card.querySelector('.card-img');
             img.addEventListener('load', function() {
                 card.querySelector('.img-loading').style.display = 'none';
             });
             
-// 图片加载失败处理
-img.addEventListener('error', function() {
-    card.querySelector('.img-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
-    card.querySelector('.img-loading').style.color = '#e74c3c';
-    
-    // 添加CDN切换功能
-    setTimeout(() => {
-        switchCDN();
-    }, 2000);
-});
+            img.addEventListener('error', function() {
+                card.querySelector('.img-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+                card.querySelector('.img-loading').style.color = '#e74c3c';
+                
+                setTimeout(() => {
+                    switchCDN();
+                }, 2000);
+            });
             
             return card;
         }
 
-// 获取图片URL - 带CDN切换功能
-function getImageUrl(path) {
-    return CDN_CONFIG[currentCDN] + encodeURI(path);
-}
+        // 打开模态框
+        function openModal(index) {
+            currentImageIndex = index;
+            const image = PAGINATION_CONFIG.loadedImageData[index];
+            
+            if (!image) return;
+            
+            imageModal.style.display = 'block';
+            modalTitle.textContent = formatImageName(image.name);
+            
+            const existingImg = document.querySelector(`.card-img[data-index="${index}"]`);
+            
+            if (existingImg && existingImg.complete && existingImg.naturalWidth > 0) {
+                modalImage.src = existingImg.src;
+                modalLoading.style.display = 'none';
+                modalImage.style.display = 'block';
+            } else {
+                modalLoading.style.display = 'block';
+                modalImage.style.display = 'none';
+                
+                const imageUrl = getImageUrl(image.path);
+                modalImage.src = imageUrl;
+                
+                modalImage.onload = function() {
+                    modalLoading.style.display = 'none';
+                    modalImage.style.display = 'block';
+                };
+                
+                modalImage.onerror = function() {
+                    modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
+                };
+            }
+        }
 
-// CDN失败时切换到备用
-function switchCDN() {
-    const cdns = ['primary', 'gcore', 'fastly', 'testing'];
-    const currentIndex = cdns.indexOf(currentCDN);
-    const nextIndex = (currentIndex + 1) % cdns.length;
-    currentCDN = cdns[nextIndex];
-    console.log(`切换到CDN: ${currentCDN}`);
-    
-    // 重新渲染所有图片
-    renderImages();
-}
+        // 显示上一张图片
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + PAGINATION_CONFIG.loadedImageData.length) % PAGINATION_CONFIG.loadedImageData.length;
+            openModal(currentImageIndex);
+        }
 
-        // 格式化图片名称
+        // 显示下一张图片
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % PAGINATION_CONFIG.loadedImageData.length;
+            openModal(currentImageIndex);
+        }
+
+        // 其他辅助函数保持不变
+        function getImageUrl(path) {
+            return CDN_CONFIG[currentCDN] + encodeURI(path);
+        }
+
+        function switchCDN() {
+            const cdns = ['primary', 'gcore', 'fastly'];
+            const currentIndex = cdns.indexOf(currentCDN);
+            const nextIndex = (currentIndex + 1) % cdns.length;
+            currentCDN = cdns[nextIndex];
+            console.log(`切换到CDN: ${currentCDN}`);
+            renderImages();
+        }
+
         function formatImageName(name) {
-            // 移除文件扩展名
             return name.replace(/\.[^/.]+$/, "");
         }
 
-        // 格式化日期
         function formatDate(dateString) {
             try {
                 const date = new Date(dateString);
@@ -854,29 +945,24 @@ function switchCDN() {
             }
         }
 
-        // 显示错误信息
         function showError(message) {
             error.textContent = message;
             error.style.display = 'block';
             loading.classList.remove('show');
+            infiniteLoading.classList.remove('show');
         }
 
-        // 设置模态框事件
         function setupModalEvents() {
-            // 关闭模态框
             modalClose.addEventListener('click', closeModal);
             
-// 点击模态框背景关闭
-imageModal.addEventListener('click', function(e) {
-    // 只有当点击的是模态框背景（不是图片、不是关闭按钮、不是导航按钮）时才关闭
-    if (e.target === imageModal || 
-        e.target.classList.contains('modal-content-container') ||
-        (e.target.classList.contains('modal-content') && !modalLoading.style.display === 'block')) {
-        closeModal();
-    }
-});
+            imageModal.addEventListener('click', function(e) {
+                if (e.target === imageModal || 
+                    e.target.classList.contains('modal-content-container') ||
+                    (e.target.classList.contains('modal-content') && !modalLoading.style.display === 'block')) {
+                    closeModal();
+                }
+            });
             
-            // 键盘事件
             document.addEventListener('keydown', function(e) {
                 if (imageModal.style.display === 'block') {
                     if (e.key === 'Escape') {
@@ -889,72 +975,41 @@ imageModal.addEventListener('click', function(e) {
                 }
             });
             
-            // 导航按钮
             modalPrev.addEventListener('click', showPrevImage);
             modalNext.addEventListener('click', showNextImage);
         }
 
-        // 打开模态框
-function openModal(index) {
-    currentImageIndex = index;
-    const image = imageData[index];
-    
-    // 显示模态框
-    imageModal.style.display = 'block';
-    
-    // 设置图片标题
-    modalTitle.textContent = formatImageName(image.name);
-    
-    // 查找页面中已加载的图片元素
-    const existingImg = document.querySelector(`.card-img[data-index="${index}"]`);
-    
-    if (existingImg && existingImg.complete && existingImg.naturalWidth > 0) {
-        // 直接使用已加载的图片，避免重新请求
-        modalImage.src = existingImg.src;
-        modalLoading.style.display = 'none';
-        modalImage.style.display = 'block';
-    } else {
-        // 备用：重新加载图片
-        modalLoading.style.display = 'block';
-        modalImage.style.display = 'none';
-        
-        const imageUrl = getImageUrl(image.path);
-        modalImage.src = imageUrl;
-        
-        modalImage.onload = function() {
-            modalLoading.style.display = 'none';
-            modalImage.style.display = 'block';
-        };
-        
-        modalImage.onerror = function() {
-            modalLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 加载失败';
-        };
-    }
-}
-
-        // 关闭模态框
         function closeModal() {
             imageModal.style.display = 'none';
         }
 
-        // 显示上一张图片
-        function showPrevImage() {
-            currentImageIndex = (currentImageIndex - 1 + imageData.length) % imageData.length;
-            openModal(currentImageIndex);
-        }
-
-        // 显示下一张图片
-        function showNextImage() {
-            currentImageIndex = (currentImageIndex + 1) % imageData.length;
-            openModal(currentImageIndex);
-        }
-
-        // 更新滚动指示器
         function updateScrollIndicator() {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
             scrollIndicator.style.transform = `scaleX(${scrolled / 100})`;
+        }
+
+        function fixEncoding(text) {
+            let fixed = text;
+            const encodingMap = {
+                'Ã©': 'é', 'Ã¨': 'è', 'Ãª': 'ê', 'Ã«': 'ë', 'Ã¡': 'á', 'Ã ': 'à', 'Ã¢': 'â', 'Ã¤': 'ä',
+                'Ã³': 'ó', 'Ã²': 'ò', 'Ã´': 'ô', 'Ã¶': 'ö', 'Ãº': 'ú', 'Ã¹': 'ù', 'Ã»': 'û', 'Ã¼': 'ü',
+                'Ã±': 'ñ', 'Ã§': 'ç', 'Ã': 'É', 'Ã': 'È', 'Ã': 'Ê', 'Ã': 'Ë', 'Ã': 'Á', 'Ã': 'À',
+                'Ã': 'Â', 'Ã': 'Ä', 'Ã': 'Ó', 'Ã': 'Ò', 'Ã': 'Ô', 'Ã': 'Ö', 'Ã': 'Ú', 'Ã': 'Ù',
+                'Ã': 'Û', 'Ã': 'Ü', 'Ã': 'Ç'
+            };
+            
+            Object.keys(encodingMap).forEach(badChar => {
+                fixed = fixed.replace(new RegExp(badChar, 'g'), encodingMap[badChar]);
+            });
+            
+            return fixed;
+        }
+
+        function tryFallbackData() {
+            // 备用数据代码...
+            console.log('使用备用数据');
         }
     </script>
 </body>
