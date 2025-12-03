@@ -985,7 +985,7 @@ function formatImageName(name) {
     // 在英文句号处添加换行符（仅当文件名包含句号时）
     if (nameWithoutExt.includes('.')) {
         // 使用正则表达式将句号替换为句号+换行符
-        return nameWithoutExt.replace(/\./g, '.<br>');
+        return nameWithoutExt.replace(/([。.])/g, '$1<br>');
     }
     
     return nameWithoutExt;
