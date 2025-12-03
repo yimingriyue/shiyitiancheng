@@ -937,8 +937,8 @@ function openModal(index) {
     if (!image) return;
     
     imageModal.style.display = 'block';
-modalTitle.textContent = formatImageName(image.name).replace(/<br>/g, '');
-
+    // 使用 useLineBreak = false 来显示完整的标题
+    modalTitle.textContent = formatImageName(image.name, false);
     
     // 直接使用卡片中已加载的图片元素
     const existingImg = document.querySelector(`.card-img[data-index="${index}"]`);
