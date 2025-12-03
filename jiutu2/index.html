@@ -751,9 +751,18 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             // 返回首页按钮事件 
-            homeButton.addEventListener('click', function() {
+homeButton.addEventListener('click', function() {
+    // 获取当前页面的基础URL（去掉路径部分）
+    const baseUrl = window.location.origin;
+    
+    // 如果当前已经在首页，则滚动到顶部
+    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    } else {
+        // 否则跳转到首页
+        window.location.href = baseUrl + '/';
+    }
+});
         });
 
         // 加载图片数据
