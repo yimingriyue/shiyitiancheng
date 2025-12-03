@@ -214,7 +214,7 @@
         }
         
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             margin-bottom: 6px;
             color: #2c3e50;
             font-weight: 600;
@@ -374,7 +374,7 @@
             width: 100%;
             text-align: center;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
             padding: 20px;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
@@ -905,7 +905,7 @@ card.innerHTML = `
         <img class="card-img" src="${imageUrl}" alt="${image.name}" data-index="${index}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22 viewBox=%220 0 300 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f0f0f0%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22sans-serif%22>图片加载失败</text></svg>'">
     </div>
     <div class="card-content">
-        <h4 class="card-title">${formatImageName(image.name)}</h4>
+        <h4 class="card-title">${formatImageName(image.name, true)}</h4>
         <p class="card-date">${formatDate(image.time)}</p>
     </div>
 `;
@@ -937,7 +937,8 @@ function openModal(index) {
     if (!image) return;
     
     imageModal.style.display = 'block';
-    modalTitle.textContent = formatImageName(image.name);
+modalTitle.textContent = formatImageName(image.name).replace(/<br>/g, '');
+
     
     // 直接使用卡片中已加载的图片元素
     const existingImg = document.querySelector(`.card-img[data-index="${index}"]`);
@@ -992,11 +993,15 @@ function openModal(index) {
             renderImages();
         }
 
-function formatImageName(name) {
+function formatImageName(name, useLineBreak = true) {
     // 首先移除文件扩展名
     const nameWithoutExt = name.replace(/\.[^/.]+$/, "");
     
-    // 在英文句号处添加换行符（仅当文件名包含句号时）
+    if (!useLineBreak) {
+        return nameWithoutExt; // 模态框标题不使用换行
+    }
+    
+    // 卡片标题：在英文句号处添加换行符（仅当文件名包含句号时）
     if (nameWithoutExt.includes('.')) {
         // 使用正则表达式将句号替换为句号+换行符
         return nameWithoutExt.replace(/([。.])/g, '$1<br>');
