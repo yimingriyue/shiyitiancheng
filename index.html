@@ -1001,19 +1001,24 @@ function formatImageName(name, useLineBreak = true) {
         return nameWithoutExt; // 模态框标题不使用换行，保持完整
     }
     
-    // 卡片标题：隐藏最后一个句号之后的内容
-    const lastPeriodIndex = nameWithoutExt.lastIndexOf('。');
+    // 卡片标题：隐藏最后一个中文句号或英文句号之后的内容
     let cardTitle = nameWithoutExt;
+    
+    // 查找最后一个中文句号或英文句号的位置
+    const lastPeriodIndex = Math.max(
+        nameWithoutExt.lastIndexOf('。'),
+        nameWithoutExt.lastIndexOf('.')
+    );
     
     if (lastPeriodIndex !== -1) {
         // 截取到最后一个句号（包含句号）
         cardTitle = nameWithoutExt.substring(0, lastPeriodIndex + 1);
     }
     
-    // 在剩余的句号处添加换行符
-    if (cardTitle.includes('。')) {
+    // 在句号处添加换行符（同时处理中文和英文句号）
+    if (cardTitle.includes('。') || cardTitle.includes('.')) {
         // 使用正则表达式将句号替换为句号+换行符
-        return cardTitle.replace(/([。])/g, '$1<br>');
+        return cardTitle.replace(/([。.])/g, '$1<br>');
     }
     
     return cardTitle;
