@@ -998,16 +998,25 @@ function formatImageName(name, useLineBreak = true) {
     const nameWithoutExt = name.replace(/\.[^/.]+$/, "");
     
     if (!useLineBreak) {
-        return nameWithoutExt; // 模态框标题不使用换行
+        return nameWithoutExt; // 模态框标题不使用换行，保持完整
     }
     
-    // 卡片标题：在英文句号处添加换行符（仅当文件名包含句号时）
-    if (nameWithoutExt.includes('.')) {
+    // 卡片标题：隐藏最后一个句号之后的内容
+    const lastPeriodIndex = nameWithoutExt.lastIndexOf('。');
+    let cardTitle = nameWithoutExt;
+    
+    if (lastPeriodIndex !== -1) {
+        // 截取到最后一个句号（包含句号）
+        cardTitle = nameWithoutExt.substring(0, lastPeriodIndex + 1);
+    }
+    
+    // 在剩余的句号处添加换行符
+    if (cardTitle.includes('。')) {
         // 使用正则表达式将句号替换为句号+换行符
-        return nameWithoutExt.replace(/([。.])/g, '$1<br>');
+        return cardTitle.replace(/([。])/g, '$1<br>');
     }
     
-    return nameWithoutExt;
+    return cardTitle;
 }
 
         function formatDate(dateString) {
