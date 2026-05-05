@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>诗意天城</title>
+    <title>诗意天城 · 诗画长廊</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "LXGW WenKai Mono GB", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, 'SimSun', serif;
+            /* 使用更优雅的中文字体，保留思源宋体/楷体风格 */
+            font-family: "LXGW WenKai Mono GB", "PingFang SC", "Microsoft YaHei", "Noto Serif SC", system-ui, -apple-system, 'SimSun', serif;
         }
 
         body {
@@ -128,7 +129,7 @@
             padding: 0 20px 40px;
         }
 
-        /* 小红书风格卡片 - 左图右文 */
+        /* 小红书风格卡片 - 左图右文，且右侧正文内容展示全（去掉截断） */
         .gallery {
             display: flex;
             flex-direction: column;
@@ -182,7 +183,7 @@
 
         .card-content {
             flex: 1;
-            padding: 16px 20px 16px 16px;
+            padding: 18px 22px 18px 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -191,55 +192,54 @@
         }
 
         .card-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
             line-height: 1.4;
             color: #1e1e2f;
-            margin-bottom: 6px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            word-break: break-word;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
         }
 
+        /* --- 修改点：诗词内容区域展示全文，宽度自适应，允许换行 --- */
         .card-poem {
-            font-size: 0.85rem;
-            color: #6b6a7a;
-            line-height: 1.5;
-            margin: 8px 0 6px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            font-style: italic;
+            font-size: 0.9rem;
+            color: #4a4a5a;
+            line-height: 1.65;
+            margin: 8px 0 10px;
+            /* 移除截断限制，展示全文 */
+            display: block;
+            overflow: visible;
+            white-space: normal;
+            word-break: break-word;
+            font-style: normal;
+            background: rgba(245, 240, 255, 0.3);
+            padding: 6px 0 4px;
+            border-radius: 12px;
+        }
+
+        /* 新增全文辅助样式，如诗词较长时优雅滚动，但无裁剪 */
+        .card-poem-full {
+            max-height: none;
         }
 
         .card-meta {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 6px;
-            font-size: 0.7rem;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 0.75rem;
             color: #a07ad4;
+            flex-wrap: wrap;
         }
 
-        .card-date {
+        .card-date, .card-author {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-        }
-
-        .card-author {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
         .card-hint {
-            margin-top: 10px;
+            margin-top: 14px;
             font-size: 0.7rem;
             color: #a07ad4;
             display: flex;
@@ -273,14 +273,14 @@
                 width: 210px;
             }
             .card-content {
-                padding: 12px 14px;
+                padding: 14px 16px;
             }
             .card-title {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
             .card-poem {
-                font-size: 0.75rem;
-                -webkit-line-clamp: 2;
+                font-size: 0.8rem;
+                line-height: 1.5;
             }
         }
 
@@ -289,10 +289,10 @@
                 width: 200px;
             }
             .card-title {
-                font-size: 0.9rem;
+                font-size: 1rem;
             }
             .card-poem {
-                font-size: 0.7rem;
+                font-size: 0.75rem;
             }
         }
 
@@ -410,6 +410,8 @@
             opacity: 0.9;
             font-style: italic;
             margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
         .modal-meta {
             font-size: 0.75rem;
@@ -524,8 +526,9 @@
 
 <footer>
     <div class="footer-content">
-        <p class="footer-poem">“我欲乘风归去，又恐琼楼玉宇，起舞弄清影，何似在人间。”</p>
-        <p>诗意天城 · 云端诗意集 | 灵感如云，笔墨成画</p>
+        <p class="footer-poem">“一字是一画分天地，画分出上下左右的方块字。”</p>
+       <p>立体生动的大曲线，分出阴阳刚柔、上下内外、始终本末。</p>
+        <p>文字画 ·  宇宙在手，万化由心| 灵感如云，笔墨成画</p>
         <div class="social-links">
             <a href="https://github.com/yimingriyue/shiyaitanji" target="_blank"><i class="fab fa-github"></i></a>
         </div>
@@ -610,9 +613,11 @@
 
     function useMockData() {
         if(PAGINATION_CONFIG.allImageData.length === 0){
+            // 丰富mock数据，确保展示全文
             PAGINATION_CONFIG.allImageData = [
-                {path:"images/poem1.jpg", name:"云海仙踪", fullTitle:"云海仙踪 · 天接云涛连晓雾", content:"天接云涛连晓雾，星河欲转千帆舞。仿佛梦魂归帝所，闻天语，殷勤问我归何处。", time:"2024-01-15", author:"李清照", dynasty:"宋"},
-                {path:"images/poem2.jpg", name:"月映潇湘", fullTitle:"月映潇湘 · 江畔何人初见月", content:"江畔何人初见月？江月何年初照人？人生代代无穷已，江月年年望相似。", time:"2024-01-16", author:"张若虚", dynasty:"唐"}
+                {path:"images/poem1.jpg", name:"云海仙踪", fullTitle:"云海仙踪 · 天接云涛连晓雾", content:"天接云涛连晓雾，星河欲转千帆舞。仿佛梦魂归帝所，闻天语，殷勤问我归何处。我报路长嗟日暮，学诗谩有惊人句。九万里风鹏正举。风休住，蓬舟吹取三山去！", time:"2024-01-15", author:"李清照", dynasty:"宋"},
+                {path:"images/poem2.jpg", name:"月映潇湘", fullTitle:"月映潇湘 · 江畔何人初见月", content:"江畔何人初见月？江月何年初照人？人生代代无穷已，江月年年望相似。不知江月待何人，但见长江送流水。白云一片去悠悠，青枫浦上不胜愁。", time:"2024-01-16", author:"张若虚", dynasty:"唐"},
+                {path:"images/poem3.jpg", name:"醉蓬莱", fullTitle:"醉蓬莱 · 对朝云叆叇", content:"对朝云叆叇，暮雨霏微，乱峰相倚。巫峡高唐，锁楚宫朱翠。画戟移春，靓妆迎马，向一川都会。万里投荒，一身吊影，成何欢意。尽道黔南，去天尺五，望极神州，万重烟水。", time:"2024-02-01", author:"黄庭坚", dynasty:"宋"}
             ];
             loadCurrentPage();
         }
@@ -665,25 +670,28 @@
         const card = document.createElement('div');
         card.className = 'card';
         const imgUrl = getImageUrl(image.path);
-        const displayTitle = image.fullTitle || image.name;
-        const displayPoem = image.content ? (image.content.length > 50 ? image.content.substring(0, 50) + '...' : image.content) : '';
+        // 优先fullTitle，若无则用name
+        const displayTitle = image.fullTitle || image.name || "诗意图";
+        // 重点：展示完整content，不再截断
+        const displayPoem = image.content ? image.content.trim() : '';
+        
         const dateStr = formatDate(image.time);
-        const authorStr = image.author ? `${image.author} · ${image.dynasty || ''}` : '';
+        const authorStr = image.author ? `${image.author}${image.dynasty ? ' · ' + image.dynasty : ''}` : '';
         
         card.innerHTML = `
             <div class="card-img-container" style="position: relative;">
                 <div class="img-loading"><i class="fas fa-spinner fa-pulse"></i> 诗画入梦</div>
-                <img class="card-img" src="${imgUrl}" alt="${image.name}" data-index="${globalIndex}" loading="lazy" 
+                <img class="card-img" src="${imgUrl}" alt="${image.name || '诗画'}" data-index="${globalIndex}" loading="lazy" 
                      onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23ede7f6\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%239583c4\' font-size=\'14\'%3E✨ 失落的诗意%3C/text%3E%3C/svg%3E'">
             </div>
             <div class="card-content">
                 <div class="card-title">${escapeHtml(displayTitle)}</div>
-                ${displayPoem ? `<div class="card-poem">${escapeHtml(displayPoem)}</div>` : ''}
+                ${displayPoem ? `<div class="card-poem">${escapeHtml(displayPoem)}</div>` : '<div class="card-poem" style="color:#aaa;">落笔生烟，诗意未至</div>'}
                 <div class="card-meta">
                     ${dateStr ? `<span class="card-date"><i class="far fa-calendar-alt"></i> ${dateStr}</span>` : ''}
                     ${authorStr ? `<span class="card-author"><i class="fas fa-feather-alt"></i> ${escapeHtml(authorStr)}</span>` : ''}
                 </div>
-                <div class="card-hint"><i class="fas fa-expand-alt"></i> 轻点画卷 · 细品风雅</div>
+                <div class="card-hint"><i class="fas fa-expand-alt"></i> 轻点画卷 · 品读全诗</div>
             </div>
         `;
 
@@ -712,10 +720,13 @@
             if(m === '<') return '&lt;';
             if(m === '>') return '&gt;';
             return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
         });
     }
 
     function getImageUrl(path) {
+        if (!path) return '';
         return CDN_CONFIG[currentCDN] + encodeURI(path);
     }
 
@@ -799,12 +810,12 @@
         const imgData = PAGINATION_CONFIG.loadedImageData[currentImageIndex];
         
         const displayTitle = imgData.fullTitle || imgData.name;
-        const displayPoem = imgData.content || '';
+        const displayPoem = imgData.content || '无题诗韵，意蕴悠长。';
         const authorInfo = imgData.author ? `${imgData.author}${imgData.dynasty ? ' · ' + imgData.dynasty : ''}` : '';
         const dateInfo = formatDate(imgData.time);
         
         modalTitleSpan.innerText = displayTitle;
-        modalPoemSpan.innerText = displayPoem;
+        modalPoemSpan.innerText = displayPoem;  // 保证全文展示
         modalMetaSpan.innerHTML = `${authorInfo ? `<span>✍️ ${escapeHtml(authorInfo)}</span>` : ''}${dateInfo ? `<span>📅 ${dateInfo}</span>` : ''}`;
         
         modalLoadingSpan.style.display = 'flex';
