@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>诗意天城 · 小红书诗意画廊</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "LXGW WenKai Mono GB", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, 'SimSun', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #eef5ff 0%, #f9f3ff 100%);
+            color: #2c2c2c;
+            line-height: 1.55;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 云朵氛围 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 15% 30%, rgba(255,255,240,0.6) 0%, transparent 30%),
+                              radial-gradient(circle at 85% 70%, rgba(230,220,250,0.5) 0%, transparent 35%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 80% 20% 70% 30% / 60% 50% 50% 40%;
+            filter: blur(12px);
+            z-index: -1;
+            animation: floatSlow 22s infinite ease-in-out;
+        }
+
+        .cloud-1 { width: 180px; height: 70px; top: 12%; left: 3%; }
+        .cloud-2 { width: 240px; height: 90px; top: 30%; right: 5%; animation-duration: 28s; animation-delay: 3s; }
+        .cloud-3 { width: 150px; height: 60px; bottom: 20%; left: 10%; animation-duration: 18s; animation-delay: 7s; }
+
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(18px, 12px) rotate(2deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* 头部设计 */
+        header {
+            background: linear-gradient(120deg, rgba(98, 58, 162, 0.92), rgba(45, 108, 223, 0.92));
+            backdrop-filter: blur(2px);
+            color: white;
+            text-align: center;
+            padding: 2rem 1.5rem 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 3rem;
+            letter-spacing: 4px;
+            font-weight: 600;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .divider {
+            width: 80px;
+            height: 3px;
+            background: rgba(255,240,200,0.7);
+            margin: 1rem auto;
+            border-radius: 4px;
+        }
+
+        .poem-line {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            margin: 0.2rem 0;
+        }
+
+        /* 子目录入口 */
+        .subdirectory-link {
+            position: absolute;
+            top: 22px;
+            left: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.6rem;
+            background: rgba(255,255,255,0.15);
+            width: 44px;
+            height: 44px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .subdirectory-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+            color: white;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        /* ========= 小红书风格卡片 ========= */
+        /* 卡片改为横向布局：左侧图片，右侧内容区 */
+        .gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 12px 0 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            border: 1px solid rgba(220, 200, 240, 0.4);
+            backdrop-filter: blur(2px);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 28px -12px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(106, 17, 203, 0.2);
+        }
+
+        /* 左侧图片容器 (类似小红书正方形比例区域) */
+        .card-img-container {
+            width: 140px;
+            flex-shrink: 0;
+            background: #f4f2f8;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 为了比例更舒服，在移动端略微调整宽度 */
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.03);
+        }
+
+        /* 右侧内容区 */
+        .card-content {
+            flex: 1;
+            padding: 16px 20px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: transparent;
+            position: relative;
+        }
+
+        /* 标题样式 + 正文描述感 */
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #1e1e2f;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+        }
+
+        /* 日期 / 辅助信息 */
+        .card-date {
+            font-size: 0.75rem;
+            color: #8f8ca3;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .card-date i {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        /* 额外添加“查看详情”的视觉提示 */
+        .card-hint {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: #a07ad4;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .card:hover .card-hint {
+            color: #5f35b3;
+            gap: 8px;
+        }
+
+        /* 图片加载占位 */
+        .img-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eceaff;
+            color: #6f6b8a;
+            font-size: 0.8rem;
+            z-index: 2;
+        }
+
+        /* 响应式: 手机下卡片竖向比例调整但保持左图右文 */
+        @media (max-width: 640px) {
+            .card-img-container {
+                width: 110px;
+            }
+            .card-content {
+                padding: 12px 14px;
+            }
+            .card-title {
+                font-size: 1rem;
+                -webkit-line-clamp: 2;
+            }
+            .card-hint {
+                margin-top: 6px;
+                font-size: 0.65rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-img-container {
+                width: 100px;
+            }
+            .card-title {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* 加载更多 & 状态 */
+        .loading, .infinite-loading, .load-end {
+            text-align: center;
+            padding: 32px 20px;
+            background: rgba(255,255,245,0.7);
+            border-radius: 40px;
+            margin-top: 20px;
+            backdrop-filter: blur(4px);
+            display: none;
+        }
+        .show { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .pagination-info {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b6a7a;
+            margin: 12px 0;
+        }
+        .error {
+            text-align: center;
+            background: #ffe9e9;
+            padding: 16px;
+            border-radius: 28px;
+            color: #c23d3d;
+            display: none;
+            margin: 20px;
+        }
+
+        /* 滚动条/顶部指示器 */
+        .scroll-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #bc95e6, #5f6ef0);
+            transform: scaleX(0);
+            transform-origin: left;
+            z-index: 1100;
+            transition: transform 0.2s;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 26px;
+            right: 26px;
+            width: 48px;
+            height: 48px;
+            background: rgba(98, 58, 162, 0.9);
+            backdrop-filter: blur(8px);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: 0.2s;
+        }
+        .scroll-to-top.show { display: flex; }
+        .scroll-to-top:hover {
+            background: #492b86;
+            transform: scale(1.05);
+        }
+
+        /* 模态框保持高级预览 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.96);
+            animation: fadeIn 0.2s;
+        }
+        .modal-content-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+        }
+        .modal-title {
+            position: absolute;
+            bottom: 24px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 38px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 60px;
+            padding: 8px 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-nav:hover { background: rgba(0,0,0,0.8); }
+        .modal-prev { left: 20px; }
+        .modal-next { right: 20px; }
+        .modal-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 24px;
+            border-radius: 40px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 22px;
+            right: 28px;
+            font-size: 38px;
+            color: white;
+            cursor: pointer;
+            z-index: 2001;
+            opacity: 0.8;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 20px;
+            background: rgba(245, 240, 255, 0.7);
+            backdrop-filter: blur(6px);
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #5f5a77;
+        }
+        .footer-poem {
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        .social-links a {
+            color: #6f42c1;
+            margin: 0 8px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="scroll-effect" id="scrollIndicator"></div>
+<div class="cloud cloud-1"></div>
+<div class="cloud cloud-2"></div>
+<div class="cloud cloud-3"></div>
+<button class="scroll-to-top" id="scrollToTop"><i class="fas fa-arrow-up"></i></button>
+
+<header>
+    <div class="header-content">
+        <a href="jiutu2/index.html" class="subdirectory-link" title="诗意续章">
+            <i class="fas fa-folder-open"></i>
+        </a>
+        <h1>诗意天城</h1>
+        <div class="divider"></div>
+        <p class="poem-line">天接云涛连晓雾，星河欲转千帆舞</p>
+        <p class="poem-line">仿佛梦魂归帝所，闻天语，殷勤问我归何处</p>
+        <div class="subtitle">· 小红书式诗意集 ·</div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="gallery" id="gallery"></div>
+    <div class="loading" id="loading"><i class="fas fa-cloud-moon"></i> 采撷诗篇中...</div>
+    <div class="infinite-loading" id="infiniteLoading"><i class="fas fa-spinner fa-pulse"></i> 云间漫步 加载更多...</div>
+    <div class="load-end" id="loadEnd"><i class="fas fa-feather-alt"></i> 已览尽诗意 · 共 <span id="totalCount">0</span> 幅画卷</div>
+    <div class="pagination-info" id="paginationInfo"></div>
+    <div class="error" id="error"></div>
+</div>
+
+<!-- 模态框预览 -->
+<div class="modal" id="imageModal">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <div class="modal-nav modal-prev" id="modalPrev">&#10094;</div>
+    <div class="modal-nav modal-next" id="modalNext">&#10095;</div>
+    <div class="modal-loading" id="modalLoading"><i class="fas fa-spinner fa-pulse"></i> 原画读取中</div>
+    <div class="modal-content-container">
+        <img class="modal-content" id="modalImage">
+    </div>
+    <div class="modal-title" id="modalTitle"></div>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <p class="footer-poem">“我欲乘风归去，又恐琼楼玉宇，起舞弄清影，何似在人间。”</p>
+        <p>诗意天城 · 云端诗意集 | 灵感如云，笔墨成画</p>
+        <div class="social-links">
+            <a href="https://github.com/yimingriyue/shiyaitanji" target="_blank"><i class="fab fa-github"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // 分页与无限滚动配置
+    const PAGINATION_CONFIG = {
+        pageSize: 18,
+        currentPage: 0,
+        hasMore: true,
+        isLoading: false,
+        allImageData: [],
+        loadedImageData: []
+    };
+
+    const CDN_CONFIG = {
+        primary: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+        gcore: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+        fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
+        testing: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
+    };
+    let currentCDN = 'primary';
+    let currentImageIndex = 0;
+
+    const gallery = document.getElementById('gallery');
+    const loadingEl = document.getElementById('loading');
+    const infiniteLoading = document.getElementById('infiniteLoading');
+    const loadEnd = document.getElementById('loadEnd');
+    const paginationInfo = document.getElementById('paginationInfo');
+    const errorDiv = document.getElementById('error');
+    const totalSpan = document.getElementById('totalCount');
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+    const scrollIndicator = document.getElementById('scrollIndicator');
+
+    // 模态框元素
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalTitleSpan = document.getElementById('modalTitle');
+    const modalCloseBtn = document.getElementById('modalClose');
+    const modalPrevBtn = document.getElementById('modalPrev');
+    const modalNextBtn = document.getElementById('modalNext');
+    const modalLoadingSpan = document.getElementById('modalLoading');
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        loadingEl.classList.add('show');
+        loadImageData();
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', updateScrollIndicator);
+        scrollToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        setupModalEvents();
+    });
+
+    async function loadImageData() {
+        if (PAGINATION_CONFIG.isLoading) return;
+        PAGINATION_CONFIG.isLoading = true;
+        try {
+            if (PAGINATION_CONFIG.currentPage === 0) loadingEl.classList.add('show');
+            else infiniteLoading.classList.add('show');
+
+            const response = await fetch('index.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            let rawText = await response.text();
+            let parsed;
+            try {
+                parsed = JSON.parse(rawText);
+            } catch(e) {
+                parsed = JSON.parse(fixEncoding(rawText));
+            }
+            PAGINATION_CONFIG.allImageData = parsed;
+            loadCurrentPage();
+        } catch(err) {
+            console.error(err);
+            showError('云端画卷暂未开启，请稍后再试。');
+            tryFallbackMock();
+        } finally {
+            PAGINATION_CONFIG.isLoading = false;
+            loadingEl.classList.remove('show');
+            infiniteLoading.classList.remove('show');
+        }
+    }
+
+    function loadCurrentPage() {
+        const start = PAGINATION_CONFIG.currentPage * PAGINATION_CONFIG.pageSize;
+        const end = start + PAGINATION_CONFIG.pageSize;
+        const pageItems = PAGINATION_CONFIG.allImageData.slice(start, end);
+        PAGINATION_CONFIG.hasMore = end < PAGINATION_CONFIG.allImageData.length;
+
+        if (PAGINATION_CONFIG.currentPage === 0) {
+            PAGINATION_CONFIG.loadedImageData = pageItems;
+            renderImages(pageItems, true);
+        } else {
+            PAGINATION_CONFIG.loadedImageData = [...PAGINATION_CONFIG.loadedImageData, ...pageItems];
+            appendMoreImages(pageItems);
+        }
+
+        updateUIState();
+        if (!PAGINATION_CONFIG.hasMore) {
+            loadEnd.classList.add('show');
+            totalSpan.innerText = PAGINATION_CONFIG.allImageData.length;
+        }
+    }
+
+    function renderImages(images, clearFirst = true) {
+        if (clearFirst) gallery.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        const startIdx = PAGINATION_CONFIG.currentPage * PAGINATION_CONFIG.pageSize;
+        images.forEach((img, idx) => {
+            const globalIndex = startIdx + idx;
+            const card = createHorizontalCard(img, globalIndex);
+            fragment.appendChild(card);
+        });
+        gallery.appendChild(fragment);
+    }
+
+    function appendMoreImages(images) {
+        const fragment = document.createDocumentFragment();
+        const startIdx = (PAGINATION_CONFIG.currentPage) * PAGINATION_CONFIG.pageSize;
+        images.forEach((img, idx) => {
+            const globalIndex = startIdx + idx;
+            fragment.appendChild(createHorizontalCard(img, globalIndex));
+        });
+        gallery.appendChild(fragment);
+    }
+
+    // 核心: 左图右文小红书风格卡片
+    function createHorizontalCard(image, globalIndex) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const imgUrl = getImageUrl(image.path);
+        const displayTitle = beautifyTitle(image.name);    // 美化标题 (不含换行但更文艺)
+        const dateStr = formatDate(image.time);
+        
+        card.innerHTML = `
+            <div class="card-img-container" style="position: relative;">
+                <div class="img-loading"><i class="fas fa-spinner fa-pulse"></i> 诗画入梦</div>
+                <img class="card-img" src="${imgUrl}" alt="${image.name}" data-index="${globalIndex}" loading="lazy" 
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23ede7f6\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%239583c4\' font-size=\'14\'%3E✨ 失落的诗意%3C/text%3E%3C/svg%3E'">
+            </div>
+            <div class="card-content">
+                <div class="card-title">${escapeHtml(displayTitle)}</div>
+                <div class="card-date"><i class="far fa-calendar-alt"></i> ${dateStr}</div>
+                <div class="card-hint"><i class="fas fa-expand-alt"></i> 轻点画卷 · 细品风雅</div>
+            </div>
+        `;
+
+        const imgElement = card.querySelector('.card-img');
+        const loaderDiv = card.querySelector('.img-loading');
+        imgElement.addEventListener('load', () => {
+            if (loaderDiv) loaderDiv.style.display = 'none';
+        });
+        imgElement.addEventListener('error', () => {
+            if (loaderDiv) {
+                loaderDiv.innerHTML = '<i class="fas fa-image-slash"></i> 画意未至';
+                loaderDiv.style.color = '#bf7f7f';
+            }
+            // 换CDN备用
+            setTimeout(() => switchCDN(), 1800);
+        });
+        card.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openModal(globalIndex);
+        });
+        return card;
+    }
+
+    function beautifyTitle(rawName) {
+        let name = rawName.replace(/\.[^/.]+$/, '');
+        // 让标题看起来更像小红书文案：保留原味但去除多余后缀感
+        if (name.length > 38) name = name.slice(0, 36) + '…';
+        return name;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    function getImageUrl(path) {
+        return CDN_CONFIG[currentCDN] + encodeURI(path);
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '昔时 · 未详';
+        try {
+            let d = new Date(dateStr);
+            if(isNaN(d.getTime())) return dateStr;
+            return `${d.getFullYear()}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getDate().toString().padStart(2,'0')}`;
+        } catch(e) { return dateStr; }
+    }
+
+    function switchCDN() {
+        const order = ['primary', 'gcore', 'fastly'];
+        let idx = order.indexOf(currentCDN);
+        let next = (idx+1) % order.length;
+        currentCDN = order[next];
+        console.log(`CDN切换: ${currentCDN}`);
+        // 重新刷新所有图片(重新渲染当前已加载数据)
+        renderImages(PAGINATION_CONFIG.loadedImageData, true);
+    }
+
+    function updateUIState() {
+        const loadedNum = PAGINATION_CONFIG.loadedImageData.length;
+        const total = PAGINATION_CONFIG.allImageData.length || 0;
+        paginationInfo.innerText = `📖 已展卷 ${loadedNum} / ${total} 幅诗画`;
+        if (!PAGINATION_CONFIG.hasMore && total > 0) paginationInfo.innerText += ' · 尽览风月';
+    }
+
+    function handleScroll() {
+        if (window.scrollY > 400) scrollToTopBtn.classList.add('show');
+        else scrollToTopBtn.classList.remove('show');
+
+        if (PAGINATION_CONFIG.hasMore && !PAGINATION_CONFIG.isLoading) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const winHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            if (scrollTop + winHeight >= docHeight - 280) {
+                loadNextPage();
+            }
+        }
+    }
+
+    function loadNextPage() {
+        if (!PAGINATION_CONFIG.hasMore || PAGINATION_CONFIG.isLoading) return;
+        PAGINATION_CONFIG.currentPage++;
+        loadCurrentPage();
+    }
+
+    function showError(msg) {
+        errorDiv.innerText = msg;
+        errorDiv.style.display = 'block';
+        loadingEl.classList.remove('show');
+        infiniteLoading.classList.remove('show');
+    }
+
+    function tryFallbackMock() {
+        if(PAGINATION_CONFIG.allImageData.length === 0){
+            const mock = [{name:"云深不知处", path:"demo/mock1.jpg", time:"2024-08-01"},{name:"天城晓梦", path:"demo/mock2.jpg", time:"2024-09-12"}];
+            PAGINATION_CONFIG.allImageData = mock;
+            loadCurrentPage();
+        }
+    }
+
+    function updateScrollIndicator() {
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = (winScroll / height) * 100;
+        scrollIndicator.style.transform = `scaleX(${scrolled / 100})`;
+    }
+
+    function setupModalEvents() {
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalPrevBtn.addEventListener('click', showPrev);
+        modalNextBtn.addEventListener('click', showNext);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target.classList.contains('modal-content-container')) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (modal.style.display !== 'block') return;
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') showPrev();
+            if (e.key === 'ArrowRight') showNext();
+        });
+    }
+
+    function openModal(index) {
+        if (!PAGINATION_CONFIG.loadedImageData[index]) return;
+        currentImageIndex = index;
+        const imgData = PAGINATION_CONFIG.loadedImageData[currentImageIndex];
+        modalTitleSpan.innerText = beautifyTitle(imgData.name);
+        modalLoadingSpan.style.display = 'flex';
+        modalImg.style.display = 'none';
+        const fullUrl = getImageUrl(imgData.path);
+        modalImg.src = fullUrl;
+        modalImg.onload = () => {
+            modalLoadingSpan.style.display = 'none';
+            modalImg.style.display = 'block';
+        };
+        modalImg.onerror = () => {
+            modalLoadingSpan.innerHTML = '<i class="fas fa-cloud-moon"></i> 画意难寻，重试中';
+            setTimeout(() => { switchCDN(); closeModal(); }, 800);
+        };
+        modal.style.display = 'block';
+    }
+
+    function showPrev() {
+        if (PAGINATION_CONFIG.loadedImageData.length === 0) return;
+        currentImageIndex = (currentImageIndex - 1 + PAGINATION_CONFIG.loadedImageData.length) % PAGINATION_CONFIG.loadedImageData.length;
+        openModal(currentImageIndex);
+    }
+    function showNext() {
+        if (PAGINATION_CONFIG.loadedImageData.length === 0) return;
+        currentImageIndex = (currentImageIndex + 1) % PAGINATION_CONFIG.loadedImageData.length;
+        openModal(currentImageIndex);
+    }
+    function closeModal() { modal.style.display = 'none'; }
+
+    function fixEncoding(str) {
+        // 修复json乱码基础
+        return str.replace(/Ã©/g,'é').replace(/Ã¨/g,'è').replace(/Ã§/g,'ç').replace(/Ã¹/g,'ù');
+    }
+</script>
+</body>
+</html>
