@@ -512,7 +512,7 @@
 
 <div class="container">
     <div class="gallery" id="gallery"></div>
-    <div class="loading" id="loading"><i class="fas fa-cloud-moon"></i> 采撷诗篇中...</div>
+    <div class="loading" id="loading"><i class="fas fa-cloud-moon"></i> 采撷画篇中...</div>
     <div class="infinite-loading" id="infiniteLoading"><i class="fas fa-spinner fa-pulse"></i> 云间漫步 加载更多...</div>
     <div class="load-end" id="loadEnd"><i class="fas fa-feather-alt"></i> 已览尽意象 · 共 <span id="totalCount">0</span> 幅画卷</div>
     <div class="pagination-info" id="paginationInfo"></div>
@@ -847,7 +847,7 @@ function addLineBreakAfterPunctuation(text) {
         
         const displayTitle = imgData.fullTitle || imgData.name;
         // 模态框同样应用句号换行
-        const rawPoem = imgData.content || '无题诗韵，意蕴悠长。';
+        const rawPoem = imgData.content || '无题画韵，意蕴悠长。';
         const displayPoem = formatPoemWithLineBreaks(rawPoem);
         const authorInfo = imgData.author ? `${imgData.author}${imgData.dynasty ? ' · ' + imgData.dynasty : ''}` : '';
         const dateInfo = formatDate(imgData.time);
