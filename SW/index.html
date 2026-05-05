@@ -394,16 +394,16 @@
         }
 .modal-info {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 80%, transparent 100%);
-    backdrop-filter: blur(10px);
-    padding: 20px 24px;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 14px 20px;
     color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    box-sizing: border-box;
-    pointer-events: none;  /* 点击穿透，避免遮挡图片点击 */
+    border: 0.5px solid rgba(255,255,255,0.15);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
         .modal-title {
             font-size: 1.3rem;
