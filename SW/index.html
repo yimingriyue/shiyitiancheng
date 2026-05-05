@@ -544,20 +544,21 @@
 <script>
     // ========== 核心功能：在句号（中英文句号 . ！ ？ ；）后自动追加软换行标记，使内容在任何容器内换行 ==========
     // 修正诗词字符串，使句号后强制换行 (兼容中英文句号以及感叹号问号等结尾字符)
-    function addLineBreakAfterPunctuation(text) {
-        if (!text) return '';
-        // 正则匹配：中文句号。英文句号. 以及！ ？ ； 等，在之后加入一个零宽空格加软换行标记（使用‪零宽换行符\u200B或者直接用 <br/> 但文本是纯文本，为了保持纯文本展示在div里并且自动换行，我们替换为“句号+换行符\n” 
-        // 但为了避免破坏原有结构并使用 HTML 展示，最佳方式：将句号后加一个 零宽空格? 但更好的是插入一个 <wbr> 标签或者直接添加 \n 配合 white-space: pre-wrap; 保证分行。
-        // 由于内容显示在 .card-poem 中，已经设置 white-space: pre-wrap; 我们直接注入换行符 \n 跟在每个句子结束符号后即可实现自动换行。
-        // 但要避免多次执行重复换行，同时保留原文的换行。
-        // 根据要求“中英文句号自动换行”，我们将 .  。  ？ ！ ； 后面追加换行符\n（如果后面不是换行）
-        let result = text.replace(/([。！？；\.\!\?;])/g, (match, p1) => {
-            return p1 + '\n';
-        });
-        // 处理特殊省略号不侵入，但不会影响. 另外避免多个换行堆积  合并多余换行
-        result = result.replace(/\n{2,}/g, '\n');
-        return result;
-    }
+function addLineBreakAfterPunctuation(text) {
+    if (!text) return '';
+    // 1. 将两个连续空格替换为换行符（两个空格处新增一行）
+    let result = text.replace(/  /g, '\n');
+    
+    // 2. 中英文句号后追加换行
+    result = result.replace(/([。！？；\.\!\?;])/g, (match, p1) => {
+        return p1 + '\n';
+    });
+    
+    // 3. 合并过多连续换行（保留最多两个换行，避免排版过于松散）
+    result = result.replace(/\n{3,}/g, '\n\n');
+    
+    return result;
+}
 
     // 渲染时调用，既保证句号后换行，又保留原诗词完整性
     function formatPoemWithLineBreaks(poemText) {
