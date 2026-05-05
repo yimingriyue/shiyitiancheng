@@ -191,7 +191,7 @@
         }
 
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.8rem;
             font-weight: 600;
             line-height: 1.4;
             color: #1e1e2f;
@@ -201,9 +201,9 @@
 
         /* 诗词内容区域：完全展示全文，且句号（中/英文）自动换行 */
         .card-poem {
-            font-size: 0.9rem;
+            font-size: 1.3rem;
             color: #4a4a5a;
-            line-height: 1.65;
+            line-height: 1.7;
             margin: 8px 0 10px;
             display: block;
             overflow: visible;
@@ -716,8 +716,8 @@ function addLineBreakAfterPunctuation(text) {
         
         card.innerHTML = `
             <div class="card-img-container" style="position: relative;">
-                <div class="img-loading"><i class="fas fa-spinner fa-pulse"></i> 诗画入梦</div>
-                <img class="card-img" src="${imgUrl}" alt="${image.name || '诗画'}" data-index="${globalIndex}" loading="lazy" 
+                <div class="img-loading"><i class="fas fa-spinner fa-pulse"></i> 文画入梦</div>
+                <img class="card-img" src="${imgUrl}" alt="${image.name || '文画'}" data-index="${globalIndex}" loading="lazy" 
                      onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23ede7f6\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%239583c4\' font-size=\'14\'%3E✨ 失落的意象%3C/text%3E%3C/svg%3E'">
             </div>
             <div class="card-content">
@@ -785,7 +785,7 @@ function addLineBreakAfterPunctuation(text) {
     function updateUIState() {
         const loadedNum = PAGINATION_CONFIG.loadedImageData.length;
         const total = PAGINATION_CONFIG.allImageData.length || 0;
-        paginationInfo.innerText = `📖 已展卷 ${loadedNum} / ${total} 幅诗画`;
+        paginationInfo.innerText = `📖 已展卷 ${loadedNum} / ${total} 幅文画`;
         if (!PAGINATION_CONFIG.hasMore && total > 0) paginationInfo.innerText += ' · 尽览风月';
     }
 
