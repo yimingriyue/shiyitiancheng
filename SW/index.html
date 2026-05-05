@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>意象天城 · 诗画长廊</title>
+    <title>意象天城 · 文画长廊 | 云间漫步</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* 使用更优雅的中文字体，保留思源宋体/楷体风格 */
             font-family: "LXGW WenKai Mono GB", "PingFang SC", "Microsoft YaHei", "Noto Serif SC", system-ui, -apple-system, 'SimSun', serif;
         }
 
@@ -129,7 +128,7 @@
             padding: 0 20px 40px;
         }
 
-        /* 小红书风格卡片 - 左图右文，且右侧正文内容展示全（去掉截断） */
+        /* 小红书风格卡片 - 左图右文，展示完整诗词（句号自动换行） */
         .gallery {
             display: flex;
             flex-direction: column;
@@ -200,13 +199,12 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- 修改点：诗词内容区域展示全文，宽度自适应，允许换行 --- */
+        /* 诗词内容区域：完全展示全文，且句号（中/英文）自动换行 */
         .card-poem {
             font-size: 0.9rem;
             color: #4a4a5a;
             line-height: 1.65;
             margin: 8px 0 10px;
-            /* 移除截断限制，展示全文 */
             display: block;
             overflow: visible;
             white-space: normal;
@@ -215,11 +213,16 @@
             background: rgba(245, 240, 255, 0.3);
             padding: 6px 0 4px;
             border-radius: 12px;
+            /* 关键：实现句号后换行，兼容中英文句号 */
+            word-break: break-word;
+            white-space: pre-wrap;      /* 保留空格和换行，优雅包裹 */
         }
 
-        /* 新增全文辅助样式，如诗词较长时优雅滚动，但无裁剪 */
-        .card-poem-full {
-            max-height: none;
+        /* 附加效果：让句号后有更好的换行机会（通过js处理文本插入零宽空格，css辅助）,
+           但核心: white-space: pre-wrap 配合自动换行足以；额外通过js将句号后加零宽换行符保证断行 */
+        .card-poem br {
+            display: block;
+            content: "";
         }
 
         .card-meta {
@@ -412,6 +415,7 @@
             margin-bottom: 8px;
             white-space: pre-wrap;
             word-break: break-word;
+            /* 模态框诗词同样句号换行 */
         }
         .modal-meta {
             font-size: 0.75rem;
@@ -457,7 +461,8 @@
             opacity: 0.8;
         }
         @keyframes fadeIn {
-            from { opacity: 0; } to { opacity: 1; }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         footer {
@@ -537,6 +542,30 @@
 </footer>
 
 <script>
+    // ========== 核心功能：在句号（中英文句号 . ！ ？ ；）后自动追加软换行标记，使内容在任何容器内换行 ==========
+    // 修正诗词字符串，使句号后强制换行 (兼容中英文句号以及感叹号问号等结尾字符)
+    function addLineBreakAfterPunctuation(text) {
+        if (!text) return '';
+        // 正则匹配：中文句号。英文句号. 以及！ ？ ； 等，在之后加入一个零宽空格加软换行标记（使用‪零宽换行符\u200B或者直接用 <br/> 但文本是纯文本，为了保持纯文本展示在div里并且自动换行，我们替换为“句号+换行符\n” 
+        // 但为了避免破坏原有结构并使用 HTML 展示，最佳方式：将句号后加一个 零宽空格? 但更好的是插入一个 <wbr> 标签或者直接添加 \n 配合 white-space: pre-wrap; 保证分行。
+        // 由于内容显示在 .card-poem 中，已经设置 white-space: pre-wrap; 我们直接注入换行符 \n 跟在每个句子结束符号后即可实现自动换行。
+        // 但要避免多次执行重复换行，同时保留原文的换行。
+        // 根据要求“中英文句号自动换行”，我们将 .  。  ？ ！ ； 后面追加换行符\n（如果后面不是换行）
+        let result = text.replace(/([。！？；\.\!\?;])/g, (match, p1) => {
+            return p1 + '\n';
+        });
+        // 处理特殊省略号不侵入，但不会影响. 另外避免多个换行堆积  合并多余换行
+        result = result.replace(/\n{2,}/g, '\n');
+        return result;
+    }
+
+    // 渲染时调用，既保证句号后换行，又保留原诗词完整性
+    function formatPoemWithLineBreaks(poemText) {
+        if (!poemText) return '落笔生烟，意象未至';
+        return addLineBreakAfterPunctuation(poemText);
+    }
+
+    // 分页配置
     const PAGINATION_CONFIG = {
         pageSize: 18,
         currentPage: 0,
@@ -614,7 +643,6 @@
 
     function useMockData() {
         if(PAGINATION_CONFIG.allImageData.length === 0){
-            // 丰富mock数据，确保展示全文
             PAGINATION_CONFIG.allImageData = [
                 {path:"images/poem1.jpg", name:"云海仙踪", fullTitle:"云海仙踪 · 天接云涛连晓雾", content:"天接云涛连晓雾，星河欲转千帆舞。仿佛梦魂归帝所，闻天语，殷勤问我归何处。我报路长嗟日暮，学诗谩有惊人句。九万里风鹏正举。风休住，蓬舟吹取三山去！", time:"2024-01-15", author:"李清照", dynasty:"宋"},
                 {path:"images/poem2.jpg", name:"月映潇湘", fullTitle:"月映潇湘 · 江畔何人初见月", content:"江畔何人初见月？江月何年初照人？人生代代无穷已，江月年年望相似。不知江月待何人，但见长江送流水。白云一片去悠悠，青枫浦上不胜愁。", time:"2024-01-16", author:"张若虚", dynasty:"唐"},
@@ -642,6 +670,8 @@
         if (!PAGINATION_CONFIG.hasMore) {
             loadEnd.classList.add('show');
             totalSpan.innerText = PAGINATION_CONFIG.allImageData.length;
+        } else {
+            loadEnd.classList.remove('show');
         }
     }
 
@@ -667,14 +697,15 @@
         gallery.appendChild(fragment);
     }
 
+    // 核心: 创建卡片，诗词内容通过 formatPoemWithLineBreaks 格式化，确保句号换行
     function createCard(image, globalIndex) {
         const card = document.createElement('div');
         card.className = 'card';
         const imgUrl = getImageUrl(image.path);
-        // 优先fullTitle，若无则用name
         const displayTitle = image.fullTitle || image.name || "意象图";
-        // 重点：展示完整content，不再截断
-        const displayPoem = image.content ? image.content.trim() : '';
+        let rawPoem = image.content ? image.content.trim() : '';
+        // 应用句号换行预处理
+        const formattedPoem = rawPoem ? formatPoemWithLineBreaks(rawPoem) : '落笔生烟，意象未至';
         
         const dateStr = formatDate(image.time);
         const authorStr = image.author ? `${image.author}${image.dynasty ? ' · ' + image.dynasty : ''}` : '';
@@ -687,7 +718,7 @@
             </div>
             <div class="card-content">
                 <div class="card-title">${escapeHtml(displayTitle)}</div>
-                ${displayPoem ? `<div class="card-poem">${escapeHtml(displayPoem)}</div>` : '<div class="card-poem" style="color:#aaa;">落笔生烟，意象未至</div>'}
+                <div class="card-poem" style="white-space: pre-wrap;">${escapeHtml(formattedPoem)}</div>
                 <div class="card-meta">
                     ${dateStr ? `<span class="card-date"><i class="far fa-calendar-alt"></i> ${dateStr}</span>` : ''}
                     ${authorStr ? `<span class="card-author"><i class="fas fa-feather-alt"></i> ${escapeHtml(authorStr)}</span>` : ''}
@@ -721,8 +752,6 @@
             if(m === '<') return '&lt;';
             if(m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
 
@@ -811,12 +840,15 @@
         const imgData = PAGINATION_CONFIG.loadedImageData[currentImageIndex];
         
         const displayTitle = imgData.fullTitle || imgData.name;
-        const displayPoem = imgData.content || '无题诗韵，意蕴悠长。';
+        // 模态框同样应用句号换行
+        const rawPoem = imgData.content || '无题诗韵，意蕴悠长。';
+        const displayPoem = formatPoemWithLineBreaks(rawPoem);
         const authorInfo = imgData.author ? `${imgData.author}${imgData.dynasty ? ' · ' + imgData.dynasty : ''}` : '';
         const dateInfo = formatDate(imgData.time);
         
         modalTitleSpan.innerText = displayTitle;
-        modalPoemSpan.innerText = displayPoem;  // 保证全文展示
+        modalPoemSpan.innerText = displayPoem;
+        modalPoemSpan.style.whiteSpace = 'pre-wrap';
         modalMetaSpan.innerHTML = `${authorInfo ? `<span>✍️ ${escapeHtml(authorInfo)}</span>` : ''}${dateInfo ? `<span>📅 ${dateInfo}</span>` : ''}`;
         
         modalLoadingSpan.style.display = 'flex';
