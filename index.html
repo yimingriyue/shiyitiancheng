@@ -599,24 +599,25 @@
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
 }
-
-/* 子目录按钮组 - 并排布局 */
+/* 子目录按钮组 - 并排布局（修复重叠问题） */
 .subdirectory-group {
     position: absolute;
     top: 20px;
     left: 20px;
     display: flex;
-    gap: 15px;
+    flex-direction: row;  /* 关键：水平排列 */
+    gap: 12px;
     z-index: 10;
 }
 
 .subdirectory-link {
+    position: relative;  /* 关键：取消绝对定位，改用相对定位 */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 1rem;
+    font-size: 0.8rem;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.15);
     width: 70px;
@@ -629,11 +630,11 @@
 }
 
 .subdirectory-link i {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
 }
 
 .subdirectory-link span {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: normal;
     letter-spacing: 1px;
 }
@@ -642,7 +643,6 @@
     color: white;
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
 /* 移动端适配 */
@@ -650,7 +650,7 @@
     .subdirectory-group {
         top: 12px;
         left: 12px;
-        gap: 10px;
+        gap: 8px;
     }
     
     .subdirectory-link {
@@ -660,11 +660,11 @@
     }
     
     .subdirectory-link i {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
     
     .subdirectory-link span {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
     }
 }
 
@@ -672,7 +672,7 @@
     .subdirectory-group {
         top: 8px;
         left: 8px;
-        gap: 8px;
+        gap: 6px;
     }
     
     .subdirectory-link {
@@ -682,15 +682,13 @@
     }
     
     .subdirectory-link i {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
     
     .subdirectory-link span {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
 }
-
-
 /* 移动端适配 */
 @media (max-width: 768px) {
     .subdirectory-link {
@@ -719,16 +717,16 @@
     
     <header>
          <div class="header-content">
-         <div class="subdirectory-group">
-        <!-- 添加子目录链接图标 -->
-        <a href="jiutu2/index.html" class="subdirectory-link" title="进入jiutu2">
-            <i class="fas fa-folder-open"></i>
-              <span>旧图集</span>
-        </a>    
-            <a href="SW/index.html" class="subdirectory-link" title="进入说文解字">
-            <i class="fas fa-folder-open"></i>
-            <span>说文解字</span>
-        </a>
+<div class="subdirectory-group">
+    <a href="jiutu2/index.html" class="subdirectory-link" title="进入jiutu2">
+        <i class="fas fa-folder-open"></i>
+        <span>旧图集</span>
+    </a>
+    <a href="SW/index.html" class="subdirectory-link" title="进入说文解字">
+        <i class="fas fa-folder-open"></i>
+        <span>说文解字</span>
+    </a>
+</div>
         </div>
             <h1>诗意天城</h1>
             <div class="divider"></div>
