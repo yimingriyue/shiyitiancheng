@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>诗意天城 · 诗画长廊</title>
+    <title>意象天城 · 诗画长廊</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -490,7 +490,7 @@
 
 <header>
     <div class="header-content">
-        <a href="jiutu2/index.html" class="subdirectory-link" title="诗意续章">
+        <a href="jiutu2/index.html" class="subdirectory-link" title="意象续章">
             <i class="fas fa-folder-open"></i>
         </a>
         <h1>意象天城</h1>
@@ -505,7 +505,7 @@
     <div class="gallery" id="gallery"></div>
     <div class="loading" id="loading"><i class="fas fa-cloud-moon"></i> 采撷诗篇中...</div>
     <div class="infinite-loading" id="infiniteLoading"><i class="fas fa-spinner fa-pulse"></i> 云间漫步 加载更多...</div>
-    <div class="load-end" id="loadEnd"><i class="fas fa-feather-alt"></i> 已览尽诗意 · 共 <span id="totalCount">0</span> 幅画卷</div>
+    <div class="load-end" id="loadEnd"><i class="fas fa-feather-alt"></i> 已览尽意象 · 共 <span id="totalCount">0</span> 幅画卷</div>
     <div class="pagination-info" id="paginationInfo"></div>
     <div class="error" id="error"></div>
 </div>
@@ -672,7 +672,7 @@
         card.className = 'card';
         const imgUrl = getImageUrl(image.path);
         // 优先fullTitle，若无则用name
-        const displayTitle = image.fullTitle || image.name || "诗意图";
+        const displayTitle = image.fullTitle || image.name || "意象图";
         // 重点：展示完整content，不再截断
         const displayPoem = image.content ? image.content.trim() : '';
         
@@ -683,11 +683,11 @@
             <div class="card-img-container" style="position: relative;">
                 <div class="img-loading"><i class="fas fa-spinner fa-pulse"></i> 诗画入梦</div>
                 <img class="card-img" src="${imgUrl}" alt="${image.name || '诗画'}" data-index="${globalIndex}" loading="lazy" 
-                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23ede7f6\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%239583c4\' font-size=\'14\'%3E✨ 失落的诗意%3C/text%3E%3C/svg%3E'">
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 200 200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23ede7f6\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%239583c4\' font-size=\'14\'%3E✨ 失落的意象%3C/text%3E%3C/svg%3E'">
             </div>
             <div class="card-content">
                 <div class="card-title">${escapeHtml(displayTitle)}</div>
-                ${displayPoem ? `<div class="card-poem">${escapeHtml(displayPoem)}</div>` : '<div class="card-poem" style="color:#aaa;">落笔生烟，诗意未至</div>'}
+                ${displayPoem ? `<div class="card-poem">${escapeHtml(displayPoem)}</div>` : '<div class="card-poem" style="color:#aaa;">落笔生烟，意象未至</div>'}
                 <div class="card-meta">
                     ${dateStr ? `<span class="card-date"><i class="far fa-calendar-alt"></i> ${dateStr}</span>` : ''}
                     ${authorStr ? `<span class="card-author"><i class="fas fa-feather-alt"></i> ${escapeHtml(authorStr)}</span>` : ''}
