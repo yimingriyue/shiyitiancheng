@@ -22,7 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* 云朵氛围 */
         body::before {
             content: "";
             position: fixed;
@@ -55,7 +54,6 @@
             100% { transform: translate(0, 0) rotate(0deg); }
         }
 
-        /* 头部设计 */
         header {
             background: linear-gradient(120deg, rgba(98, 58, 162, 0.92), rgba(45, 108, 223, 0.92));
             backdrop-filter: blur(2px);
@@ -100,7 +98,6 @@
             margin: 0.2rem 0;
         }
 
-        /* 子目录入口 */
         .subdirectory-link {
             position: absolute;
             top: 22px;
@@ -117,6 +114,7 @@
             backdrop-filter: blur(6px);
             transition: 0.2s;
             z-index: 10;
+            text-decoration: none;
         }
         .subdirectory-link:hover {
             background: rgba(255,255,255,0.3);
@@ -124,15 +122,13 @@
             color: white;
         }
 
-        /* 主容器 */
         .container {
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 20px 40px;
         }
 
-        /* ========= 小红书风格卡片 ========= */
-        /* 卡片改为横向布局：左侧图片，右侧内容区 */
+        /* 小红书风格卡片 - 左图右文 */
         .gallery {
             display: flex;
             flex-direction: column;
@@ -161,7 +157,6 @@
             border-color: rgba(106, 17, 203, 0.2);
         }
 
-        /* 左侧图片容器 (类似小红书正方形比例区域) */
         .card-img-container {
             width: 140px;
             flex-shrink: 0;
@@ -173,7 +168,6 @@
             justify-content: center;
         }
 
-        /* 为了比例更舒服，在移动端略微调整宽度 */
         .card-img {
             width: 100%;
             height: 100%;
@@ -186,7 +180,6 @@
             transform: scale(1.03);
         }
 
-        /* 右侧内容区 */
         .card-content {
             flex: 1;
             padding: 16px 20px 16px 16px;
@@ -197,13 +190,12 @@
             position: relative;
         }
 
-        /* 标题样式 + 正文描述感 */
         .card-title {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 600;
             line-height: 1.4;
             color: #1e1e2f;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             line-clamp: 2;
@@ -212,25 +204,42 @@
             word-break: break-word;
         }
 
-        /* 日期 / 辅助信息 */
+        .card-poem {
+            font-size: 0.85rem;
+            color: #6b6a7a;
+            line-height: 1.5;
+            margin: 8px 0 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-style: italic;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 6px;
+            font-size: 0.7rem;
+            color: #a07ad4;
+        }
+
         .card-date {
-            font-size: 0.75rem;
-            color: #8f8ca3;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            margin-top: 6px;
-            letter-spacing: 0.3px;
+            gap: 4px;
         }
 
-        .card-date i {
-            font-size: 0.7rem;
-            opacity: 0.7;
+        .card-author {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        /* 额外添加“查看详情”的视觉提示 */
         .card-hint {
-            margin-top: 12px;
+            margin-top: 10px;
             font-size: 0.7rem;
             color: #a07ad4;
             display: flex;
@@ -244,7 +253,6 @@
             gap: 8px;
         }
 
-        /* 图片加载占位 */
         .img-loading {
             position: absolute;
             top: 0;
@@ -260,7 +268,6 @@
             z-index: 2;
         }
 
-        /* 响应式: 手机下卡片竖向比例调整但保持左图右文 */
         @media (max-width: 640px) {
             .card-img-container {
                 width: 110px;
@@ -270,11 +277,10 @@
             }
             .card-title {
                 font-size: 1rem;
-                -webkit-line-clamp: 2;
             }
-            .card-hint {
-                margin-top: 6px;
-                font-size: 0.65rem;
+            .card-poem {
+                font-size: 0.75rem;
+                -webkit-line-clamp: 2;
             }
         }
 
@@ -285,9 +291,11 @@
             .card-title {
                 font-size: 0.9rem;
             }
+            .card-poem {
+                font-size: 0.7rem;
+            }
         }
 
-        /* 加载更多 & 状态 */
         .loading, .infinite-loading, .load-end {
             text-align: center;
             padding: 32px 20px;
@@ -314,7 +322,6 @@
             margin: 20px;
         }
 
-        /* 滚动条/顶部指示器 */
         .scroll-effect {
             position: fixed;
             top: 0;
@@ -353,7 +360,6 @@
             transform: scale(1.05);
         }
 
-        /* 模态框保持高级预览 */
         .modal {
             display: none;
             position: fixed;
@@ -374,26 +380,42 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
         .modal-content {
             max-width: 90vw;
-            max-height: 85vh;
+            max-height: 65vh;
             object-fit: contain;
             border-radius: 18px;
             box-shadow: 0 12px 30px rgba(0,0,0,0.5);
         }
-        .modal-title {
+        .modal-info {
             position: absolute;
-            bottom: 24px;
+            bottom: 0;
             left: 0;
             width: 100%;
-            text-align: center;
-            color: white;
-            background: rgba(0,0,0,0.65);
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(12px);
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: 400;
+            padding: 20px 24px;
+            color: white;
+        }
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .modal-poem {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        .modal-meta {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            display: flex;
+            gap: 16px;
         }
         .modal-nav {
             position: absolute;
@@ -406,6 +428,7 @@
             padding: 8px 18px;
             cursor: pointer;
             transition: 0.2s;
+            z-index: 2001;
         }
         .modal-nav:hover { background: rgba(0,0,0,0.8); }
         .modal-prev { left: 20px; }
@@ -419,6 +442,7 @@
             background: rgba(0,0,0,0.7);
             padding: 12px 24px;
             border-radius: 40px;
+            z-index: 2002;
         }
         .modal-close {
             position: absolute;
@@ -451,6 +475,7 @@
             color: #6f42c1;
             margin: 0 8px;
             font-size: 1.2rem;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -483,7 +508,6 @@
     <div class="error" id="error"></div>
 </div>
 
-<!-- 模态框预览 -->
 <div class="modal" id="imageModal">
     <span class="modal-close" id="modalClose">&times;</span>
     <div class="modal-nav modal-prev" id="modalPrev">&#10094;</div>
@@ -491,8 +515,12 @@
     <div class="modal-loading" id="modalLoading"><i class="fas fa-spinner fa-pulse"></i> 原画读取中</div>
     <div class="modal-content-container">
         <img class="modal-content" id="modalImage">
+        <div class="modal-info" id="modalInfo">
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-poem" id="modalPoem"></div>
+            <div class="modal-meta" id="modalMeta"></div>
+        </div>
     </div>
-    <div class="modal-title" id="modalTitle"></div>
 </div>
 
 <footer>
@@ -506,7 +534,6 @@
 </footer>
 
 <script>
-    // 分页与无限滚动配置
     const PAGINATION_CONFIG = {
         pageSize: 18,
         currentPage: 0,
@@ -520,7 +547,6 @@
         primary: 'https://gcore.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
         gcore: 'https://cdn.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
         fastly: 'https://fastly.jsdelivr.net/gh/yimingriyue/shiyitiancheng@main/',
-        testing: 'https://raw.githubusercontent.com/yimingriyue/shiyitiancheng/main/'
     };
     let currentCDN = 'primary';
     let currentImageIndex = 0;
@@ -535,16 +561,16 @@
     const scrollToTopBtn = document.getElementById('scrollToTop');
     const scrollIndicator = document.getElementById('scrollIndicator');
 
-    // 模态框元素
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImage');
     const modalTitleSpan = document.getElementById('modalTitle');
+    const modalPoemSpan = document.getElementById('modalPoem');
+    const modalMetaSpan = document.getElementById('modalMeta');
     const modalCloseBtn = document.getElementById('modalClose');
     const modalPrevBtn = document.getElementById('modalPrev');
     const modalNextBtn = document.getElementById('modalNext');
     const modalLoadingSpan = document.getElementById('modalLoading');
 
-    // 初始化
     document.addEventListener('DOMContentLoaded', () => {
         loadingEl.classList.add('show');
         loadImageData();
@@ -575,11 +601,21 @@
         } catch(err) {
             console.error(err);
             showError('云端画卷暂未开启，请稍后再试。');
-            tryFallbackMock();
+            useMockData();
         } finally {
             PAGINATION_CONFIG.isLoading = false;
             loadingEl.classList.remove('show');
             infiniteLoading.classList.remove('show');
+        }
+    }
+
+    function useMockData() {
+        if(PAGINATION_CONFIG.allImageData.length === 0){
+            PAGINATION_CONFIG.allImageData = [
+                {path:"images/poem1.jpg", name:"云海仙踪", fullTitle:"云海仙踪 · 天接云涛连晓雾", content:"天接云涛连晓雾，星河欲转千帆舞。仿佛梦魂归帝所，闻天语，殷勤问我归何处。", time:"2024-01-15", author:"李清照", dynasty:"宋"},
+                {path:"images/poem2.jpg", name:"月映潇湘", fullTitle:"月映潇湘 · 江畔何人初见月", content:"江畔何人初见月？江月何年初照人？人生代代无穷已，江月年年望相似。", time:"2024-01-16", author:"张若虚", dynasty:"唐"}
+            ];
+            loadCurrentPage();
         }
     }
 
@@ -610,7 +646,7 @@
         const startIdx = PAGINATION_CONFIG.currentPage * PAGINATION_CONFIG.pageSize;
         images.forEach((img, idx) => {
             const globalIndex = startIdx + idx;
-            const card = createHorizontalCard(img, globalIndex);
+            const card = createCard(img, globalIndex);
             fragment.appendChild(card);
         });
         gallery.appendChild(fragment);
@@ -621,18 +657,19 @@
         const startIdx = (PAGINATION_CONFIG.currentPage) * PAGINATION_CONFIG.pageSize;
         images.forEach((img, idx) => {
             const globalIndex = startIdx + idx;
-            fragment.appendChild(createHorizontalCard(img, globalIndex));
+            fragment.appendChild(createCard(img, globalIndex));
         });
         gallery.appendChild(fragment);
     }
 
-    // 核心: 左图右文小红书风格卡片
-    function createHorizontalCard(image, globalIndex) {
+    function createCard(image, globalIndex) {
         const card = document.createElement('div');
         card.className = 'card';
         const imgUrl = getImageUrl(image.path);
-        const displayTitle = beautifyTitle(image.name);    // 美化标题 (不含换行但更文艺)
+        const displayTitle = image.fullTitle || image.name;
+        const displayPoem = image.content ? (image.content.length > 50 ? image.content.substring(0, 50) + '...' : image.content) : '';
         const dateStr = formatDate(image.time);
+        const authorStr = image.author ? `${image.author} · ${image.dynasty || ''}` : '';
         
         card.innerHTML = `
             <div class="card-img-container" style="position: relative;">
@@ -642,7 +679,11 @@
             </div>
             <div class="card-content">
                 <div class="card-title">${escapeHtml(displayTitle)}</div>
-                <div class="card-date"><i class="far fa-calendar-alt"></i> ${dateStr}</div>
+                ${displayPoem ? `<div class="card-poem">${escapeHtml(displayPoem)}</div>` : ''}
+                <div class="card-meta">
+                    ${dateStr ? `<span class="card-date"><i class="far fa-calendar-alt"></i> ${dateStr}</span>` : ''}
+                    ${authorStr ? `<span class="card-author"><i class="fas fa-feather-alt"></i> ${escapeHtml(authorStr)}</span>` : ''}
+                </div>
                 <div class="card-hint"><i class="fas fa-expand-alt"></i> 轻点画卷 · 细品风雅</div>
             </div>
         `;
@@ -655,9 +696,7 @@
         imgElement.addEventListener('error', () => {
             if (loaderDiv) {
                 loaderDiv.innerHTML = '<i class="fas fa-image-slash"></i> 画意未至';
-                loaderDiv.style.color = '#bf7f7f';
             }
-            // 换CDN备用
             setTimeout(() => switchCDN(), 1800);
         });
         card.addEventListener('click', (e) => {
@@ -667,13 +706,6 @@
         return card;
     }
 
-    function beautifyTitle(rawName) {
-        let name = rawName.replace(/\.[^/.]+$/, '');
-        // 让标题看起来更像小红书文案：保留原味但去除多余后缀感
-        if (name.length > 38) name = name.slice(0, 36) + '…';
-        return name;
-    }
-
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -681,8 +713,6 @@
             if(m === '<') return '&lt;';
             if(m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
 
@@ -691,7 +721,7 @@
     }
 
     function formatDate(dateStr) {
-        if (!dateStr) return '昔时 · 未详';
+        if (!dateStr) return '';
         try {
             let d = new Date(dateStr);
             if(isNaN(d.getTime())) return dateStr;
@@ -705,7 +735,6 @@
         let next = (idx+1) % order.length;
         currentCDN = order[next];
         console.log(`CDN切换: ${currentCDN}`);
-        // 重新刷新所有图片(重新渲染当前已加载数据)
         renderImages(PAGINATION_CONFIG.loadedImageData, true);
     }
 
@@ -743,14 +772,6 @@
         infiniteLoading.classList.remove('show');
     }
 
-    function tryFallbackMock() {
-        if(PAGINATION_CONFIG.allImageData.length === 0){
-            const mock = [{name:"云深不知处", path:"demo/mock1.jpg", time:"2024-08-01"},{name:"天城晓梦", path:"demo/mock2.jpg", time:"2024-09-12"}];
-            PAGINATION_CONFIG.allImageData = mock;
-            loadCurrentPage();
-        }
-    }
-
     function updateScrollIndicator() {
         const winScroll = document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - window.innerHeight;
@@ -763,7 +784,7 @@
         modalPrevBtn.addEventListener('click', showPrev);
         modalNextBtn.addEventListener('click', showNext);
         modal.addEventListener('click', (e) => {
-            if (e.target === modal || e.target.classList.contains('modal-content-container')) closeModal();
+            if (e.target === modal) closeModal();
         });
         document.addEventListener('keydown', (e) => {
             if (modal.style.display !== 'block') return;
@@ -777,7 +798,16 @@
         if (!PAGINATION_CONFIG.loadedImageData[index]) return;
         currentImageIndex = index;
         const imgData = PAGINATION_CONFIG.loadedImageData[currentImageIndex];
-        modalTitleSpan.innerText = beautifyTitle(imgData.name);
+        
+        const displayTitle = imgData.fullTitle || imgData.name;
+        const displayPoem = imgData.content || '';
+        const authorInfo = imgData.author ? `${imgData.author}${imgData.dynasty ? ' · ' + imgData.dynasty : ''}` : '';
+        const dateInfo = formatDate(imgData.time);
+        
+        modalTitleSpan.innerText = displayTitle;
+        modalPoemSpan.innerText = displayPoem;
+        modalMetaSpan.innerHTML = `${authorInfo ? `<span>✍️ ${escapeHtml(authorInfo)}</span>` : ''}${dateInfo ? `<span>📅 ${dateInfo}</span>` : ''}`;
+        
         modalLoadingSpan.style.display = 'flex';
         modalImg.style.display = 'none';
         const fullUrl = getImageUrl(imgData.path);
@@ -787,8 +817,7 @@
             modalImg.style.display = 'block';
         };
         modalImg.onerror = () => {
-            modalLoadingSpan.innerHTML = '<i class="fas fa-cloud-moon"></i> 画意难寻，重试中';
-            setTimeout(() => { switchCDN(); closeModal(); }, 800);
+            modalLoadingSpan.innerHTML = '<i class="fas fa-cloud-moon"></i> 画意难寻';
         };
         modal.style.display = 'block';
     }
@@ -798,15 +827,16 @@
         currentImageIndex = (currentImageIndex - 1 + PAGINATION_CONFIG.loadedImageData.length) % PAGINATION_CONFIG.loadedImageData.length;
         openModal(currentImageIndex);
     }
+    
     function showNext() {
         if (PAGINATION_CONFIG.loadedImageData.length === 0) return;
         currentImageIndex = (currentImageIndex + 1) % PAGINATION_CONFIG.loadedImageData.length;
         openModal(currentImageIndex);
     }
+    
     function closeModal() { modal.style.display = 'none'; }
 
     function fixEncoding(str) {
-        // 修复json乱码基础
         return str.replace(/Ã©/g,'é').replace(/Ã¨/g,'è').replace(/Ã§/g,'ç').replace(/Ã¹/g,'ù');
     }
 </script>
