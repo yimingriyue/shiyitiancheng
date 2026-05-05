@@ -600,6 +600,97 @@
     transform: scale(1.1);
 }
 
+/* 子目录按钮组 - 并排布局 */
+.subdirectory-group {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 15px;
+    z-index: 10;
+}
+
+.subdirectory-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.15);
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    text-decoration: none;
+    gap: 6px;
+}
+
+.subdirectory-link i {
+    font-size: 1.8rem;
+}
+
+.subdirectory-link span {
+    font-size: 0.7rem;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+.subdirectory-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .subdirectory-group {
+        top: 12px;
+        left: 12px;
+        gap: 10px;
+    }
+    
+    .subdirectory-link {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+    }
+    
+    .subdirectory-link i {
+        font-size: 1.4rem;
+    }
+    
+    .subdirectory-link span {
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .subdirectory-group {
+        top: 8px;
+        left: 8px;
+        gap: 8px;
+    }
+    
+    .subdirectory-link {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+    }
+    
+    .subdirectory-link i {
+        font-size: 1.2rem;
+    }
+    
+    .subdirectory-link span {
+        font-size: 0.55rem;
+    }
+}
+
+
 /* 移动端适配 */
 @media (max-width: 768px) {
     .subdirectory-link {
@@ -628,6 +719,7 @@
     
     <header>
          <div class="header-content">
+         <div class="subdirectory-group">
         <!-- 添加子目录链接图标 -->
         <a href="jiutu2/index.html" class="subdirectory-link" title="进入jiutu2">
             <i class="fas fa-folder-open"></i>
@@ -635,6 +727,7 @@
             <a href="SW/index.html" class="subdirectory-link" title="进入说文解字">
             <i class="fas fa-folder-open"></i>
         </a>
+        </div>
             <h1>诗意天城</h1>
             <div class="divider"></div>
             <p class="poem-line">天接云涛连晓雾，星河欲转千帆舞</p>
